@@ -35,14 +35,14 @@ uv pip install -e .
 
 ## Usage
 
-Run RAG search engine:
+### Search command:
 ```bash
 uv run cli/keyword_search_cli.py search <query>
 ```
 
 - `<query>`: the text you want to search for.
 
-### Example
+#### Example
 ```bash
 uv run cli/keyword_search_cli.py search "the hot shot"
 ```
@@ -55,4 +55,18 @@ Searching for: the hot shot
 3. Hotel Chevalier
 4. Hotel Berlin
 5. Killshot
+```
+
+### Build command:
+```bash
+uv run cli/keyword_search_cli.py build
+```
+
+Output:
+```bash
+Building inverted index...
+Inverted index written to cache/index.pkl
+Document map written to cache/docmap.pkl
+First document for token 'merida' = 4651
+Inverted index built successfully.
 ```
