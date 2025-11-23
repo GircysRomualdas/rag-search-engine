@@ -1,5 +1,6 @@
 import json
 import os
+import pickle
 import string
 
 from nltk.stem import PorterStemmer
@@ -9,6 +10,21 @@ DEFAULT_SEARCH_LIMIT = 5
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 MOVIES_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "movies.json")
 STOP_WORDS_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "stopwords.txt")
+
+CACHE_DIR = os.path.join(PROJECT_ROOT, "cache")
+os.makedirs(CACHE_DIR, exist_ok=True)
+CACHE_INDEX_PATH = os.path.join(CACHE_DIR, "index.pkl")
+CACHE_DOCMAP_PATH = os.path.join(CACHE_DIR, "docmap.pkl")
+
+
+def write_cache_index(index: dict[str, set[int]]) -> None:
+    with open(CACHE_INDEX_PATH, "wb") as f:
+        pickle.dump(index, f)
+
+
+def write_cache_docmap(docmap: dict[int, dict]) -> None:
+    with open(CACHE_DOCMAP_PATH, "wb") as f:
+        pickle.dump(docmap, f)
 
 
 def load_movies() -> list[dict]:

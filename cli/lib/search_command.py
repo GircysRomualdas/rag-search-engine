@@ -1,7 +1,7 @@
 from .utils import DEFAULT_SEARCH_LIMIT, load_movies, text_process
 
 
-def search(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:
+def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:
     movies = load_movies()
     results = []
     for movie in movies:
