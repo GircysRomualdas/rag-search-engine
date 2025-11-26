@@ -67,6 +67,5 @@ Output:
 Building inverted index...
 Inverted index written to cache/index.pkl
 Document map written to cache/docmap.pkl
-First document for token 'merida' = 4651
 Inverted index built successfully.
 ```
