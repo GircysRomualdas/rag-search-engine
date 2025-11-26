@@ -1,20 +1,22 @@
-from .utils import DEFAULT_SEARCH_LIMIT, load_movies, text_process
+from .inverted_index import InvertedIndex
+from .utils.constants import DEFAULT_SEARCH_LIMIT
+from .utils.utils import text_process
 
 
 def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:
-    movies = load_movies()
+    inverted_index = InvertedIndex()
+    inverted_index.load()
     results = []
-    for movie in movies:
-        preprocessed_title = text_process(movie["title"])
-        preprocessed_query = text_process(query)
-        if any(
-            item in title_word
-            for title_word in preprocessed_title
-            for item in preprocessed_query
-        ):
+    preprocessed_query = text_process(query)
+
+    for token in preprocessed_query:
+        doc_ids = inverted_index.get_documents(token)
+
+        for doc_id in doc_ids:
+            movie = inverted_index.docmap[doc_id]
             results.append(movie)
 
             if len(results) >= limit:
-                break
+                return results
 
     return results
