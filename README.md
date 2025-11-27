@@ -35,6 +35,19 @@ uv pip install -e .
 
 ## Usage
 
+### Build command:
+```bash
+uv run cli/keyword_search_cli.py build
+```
+
+Output:
+```bash
+Building inverted index...
+Inverted index written to cache/index.pkl
+Document map written to cache/docmap.pkl
+Inverted index built successfully.
+```
+
 ### Search command:
 ```bash
 uv run cli/keyword_search_cli.py search <query>
@@ -57,15 +70,20 @@ Searching for: the hot shot
 5. Killshot
 ```
 
-### Build command:
+### Term frequency command:
 ```bash
-uv run cli/keyword_search_cli.py build
+uv run cli/keyword_search_cli.py tf <doc_id> <term>
+```
+
+- `<doc_id>`: the ID of the document.
+- `<term>`: the term whose frequency you want to retrieve.
+
+#### Example
+```bash
+uv run cli/keyword_search_cli.py tf 424 trapper
 ```
 
 Output:
 ```bash
-Building inverted index...
-Inverted index written to cache/index.pkl
-Document map written to cache/docmap.pkl
-Inverted index built successfully.
+Term frequency of 'trapper' in document 424: 4
 ```

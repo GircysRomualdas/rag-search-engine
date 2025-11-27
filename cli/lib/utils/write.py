@@ -1,20 +1,30 @@
 import os
 import pickle
+from collections import Counter
 
-from .constants import CACHE_DOCMAP_PATH, CACHE_INDEX_PATH, PROJECT_ROOT
+from .constants import (
+    CACHE_DOCMAP_PATH,
+    CACHE_INDEX_PATH,
+    CACHE_TERM_FREQUENCIES,
+    PROJECT_ROOT,
+)
 
 
 def write_cache_index(index: dict[str, set[int]]) -> None:
-    with open(CACHE_INDEX_PATH, "wb") as f:
-        pickle.dump(index, f)
-
-    relative_path = os.path.relpath(CACHE_INDEX_PATH, PROJECT_ROOT)
-    print(f"Inverted index written to {relative_path}")
+    write_pickle(CACHE_INDEX_PATH, index, "Inverted index")
 
 
 def write_cache_docmap(docmap: dict[int, dict]) -> None:
-    with open(CACHE_DOCMAP_PATH, "wb") as f:
-        pickle.dump(docmap, f)
+    write_pickle(CACHE_DOCMAP_PATH, docmap, "Document map")
 
-    relative_path = os.path.relpath(CACHE_DOCMAP_PATH, PROJECT_ROOT)
-    print(f"Document map written to {relative_path}")
+
+def write_cache_term_frequencies(term_frequencies: dict[int, Counter[str]]) -> None:
+    write_pickle(CACHE_TERM_FREQUENCIES, term_frequencies, "Term frequencies")
+
+
+def write_pickle(path: str, data: dict, msg: str) -> None:
+    with open(path, "wb") as f:
+        pickle.dump(data, f)
+
+    relative_path = os.path.relpath(path, PROJECT_ROOT)
+    print(f"{msg} written to {relative_path}")
