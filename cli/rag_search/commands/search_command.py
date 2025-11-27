@@ -1,6 +1,6 @@
-from .inverted_index import InvertedIndex
-from .utils.constants import DEFAULT_SEARCH_LIMIT
-from .utils.utils import text_process
+from ..inverted_index import InvertedIndex
+from ..utils.constants import DEFAULT_SEARCH_LIMIT
+from ..utils.utils import text_process
 
 
 def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:

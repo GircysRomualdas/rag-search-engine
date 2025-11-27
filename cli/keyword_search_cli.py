@@ -1,8 +1,8 @@
 import argparse
 
-from lib.build_command import build_command
-from lib.search_command import search_command
-from lib.tf_command import tf_command
+from rag_search.commands.build_command import build_command
+from rag_search.commands.search_command import search_command
+from rag_search.commands.tf_command import tf_command
 
 
 def main() -> None:
