@@ -1,6 +1,7 @@
 import argparse
 
 from rag_search.commands.build_command import build_command
+from rag_search.commands.idf_command import idf_command
 from rag_search.commands.search_command import search_command
 from rag_search.commands.tf_command import tf_command
 
@@ -15,10 +16,13 @@ def main() -> None:
     subparsers.add_parser("build", help="Build the inverted index")
 
     term_frequency_parser = subparsers.add_parser(
-        "tf", help="term frequency for that term in the document"
+        "tf", help="Term frequency for that term in the document"
     )
     term_frequency_parser.add_argument("doc_id", type=int, help="Document ID")
     term_frequency_parser.add_argument("term", type=str, help="Search term")
+
+    idf_parser = subparsers.add_parser("idf", help="Inverse document frequency")
+    idf_parser.add_argument("term", type=str, help="Search term")
 
     args = parser.parse_args()
 
@@ -38,6 +42,9 @@ def main() -> None:
             print(
                 f"Term frequency of '{args.term}' in document {args.doc_id}: {term_frequency}"
             )
+        case "idf":
+            idf = idf_command(args.term)
+            print(f"Inverse document frequency of '{args.term}': {idf:.2f}")
         case _:
             parser.print_help()
 

@@ -55,7 +55,7 @@ class InvertedIndex:
         self.docmap = load_cache_docmap()
         self.term_frequencies = load_cache_term_frequencies()
 
-    def get_tf(self, doc_id: int, term: str) -> int:
+    def get_term_frequencies(self, doc_id: int, term: str) -> int:
         if doc_id not in self.term_frequencies:
             raise KeyError(f"Document ID {doc_id} not found in term frequencies")
         term_frequencies = self.term_frequencies[doc_id]

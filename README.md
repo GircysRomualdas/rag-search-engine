@@ -87,3 +87,20 @@ Output:
 ```bash
 Term frequency of 'trapper' in document 424: 4
 ```
+
+### Inverse document frequency command:
+```bash
+uv run cli/keyword_search_cli.py idf <term>
+```
+
+- `<term>`: the term for which you want to calculate the Inverse Document Frequency.
+
+#### Example
+```bash
+uv run cli/keyword_search_cli.py idf grizzly
+```
+
+Output:
+```bash
+Inverse document frequency of 'grizzly': 5.52
+```
