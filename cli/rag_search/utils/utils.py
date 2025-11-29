@@ -5,7 +5,7 @@ from nltk.stem import PorterStemmer
 from .load import load_stop_words
 
 
-def text_process(text: str) -> list[str]:
+def tokenize_text(text: str) -> list[str]:
     lowered_text = text.lower()
     clean_text = remove_punctuation(lowered_text)
     words = clean_text.split()

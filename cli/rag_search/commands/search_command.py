@@ -1,13 +1,13 @@
 from ..inverted_index import InvertedIndex
 from ..utils.constants import DEFAULT_SEARCH_LIMIT
-from ..utils.utils import text_process
+from ..utils.utils import tokenize_text
 
 
 def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:
     inverted_index = InvertedIndex()
     inverted_index.load()
     results = []
-    preprocessed_query = text_process(query)
+    preprocessed_query = tokenize_text(query)
 
     for token in preprocessed_query:
         doc_ids = inverted_index.get_documents(token)

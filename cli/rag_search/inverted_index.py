@@ -1,3 +1,4 @@
+import math
 from collections import Counter
 
 from .utils.load import (
@@ -6,7 +7,7 @@ from .utils.load import (
     load_cache_term_frequencies,
     load_movies,
 )
-from .utils.utils import text_process
+from .utils.utils import tokenize_text
 from .utils.write import (
     write_cache_docmap,
     write_cache_index,
@@ -21,7 +22,7 @@ class InvertedIndex:
         self.term_frequencies: dict[int, Counter[str]] = {}
 
     def __add_document(self, doc_id: int, text: str) -> None:
-        preprocessed_text = text_process(text)
+        preprocessed_text = tokenize_text(text)
 
         if doc_id not in self.term_frequencies:
             self.term_frequencies[doc_id] = Counter()
@@ -56,7 +57,19 @@ class InvertedIndex:
         self.term_frequencies = load_cache_term_frequencies()
 
     def get_term_frequencies(self, doc_id: int, term: str) -> int:
-        if doc_id not in self.term_frequencies:
-            raise KeyError(f"Document ID {doc_id} not found in term frequencies")
-        term_frequencies = self.term_frequencies[doc_id]
-        return term_frequencies[term]
+        tokens = tokenize_text(term)
+        if len(tokens) != 1:
+            raise ValueError("term must be a single token")
+        token = tokens[0]
+        return self.term_frequencies[doc_id][token]
+
+    def get_inverse_document_frequency(self, term: str) -> float:
+        tokens = tokenize_text(term)
+        if len(tokens) != 1:
+            raise ValueError("term must be a single token")
+
+        token = tokens[0]
+        doc_count = len(self.docmap)
+        term_doc_count = len(self.get_documents(token))
+        inverse_document_frequency = math.log((doc_count + 1) / (term_doc_count + 1))
+        return inverse_document_frequency
