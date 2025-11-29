@@ -1,5 +1,6 @@
 import argparse
 
+from rag_search.commands.bm25_idf_command import bm25_idf_command
 from rag_search.commands.build_command import build_command
 from rag_search.commands.idf_command import idf_command
 from rag_search.commands.search_command import search_command
@@ -31,6 +32,13 @@ def main() -> None:
     tfidf_parser.add_argument("doc_id", type=int, help="Document ID")
     tfidf_parser.add_argument("term", type=str, help="Search term")
 
+    bm25_idf_parser = subparsers.add_parser(
+        "bm25idf", help="Get BM25 IDF score for a given term"
+    )
+    bm25_idf_parser.add_argument(
+        "term", type=str, help="Term to get BM25 IDF score for"
+    )
+
     args = parser.parse_args()
 
     match args.command:
@@ -57,6 +65,9 @@ def main() -> None:
             print(
                 f"TF-IDF score of '{args.term}' in document '{args.doc_id}': {tf_idf_score:.2f}"
             )
+        case "bm25idf":
+            bm25_idf_score = bm25_idf_command(args.term)
+            print(f"BM25 IDF score of '{args.term}': {bm25_idf_score:.2f}")
         case _:
             parser.print_help()
 

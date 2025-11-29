@@ -122,3 +122,20 @@ Output:
 ```bash
 TF-IDF score of 'trapper' in document '424': 24.13
 ```
+
+### BM25 Inverse Document Frequency (BM25 IDF) command:
+```bash
+uv run cli/keyword_search_cli.py bm25idf <term>
+```
+
+- `<term>`: the term for which you want to calculate the BM25 IDF score.
+
+#### Example
+```bash
+uv run cli/keyword_search_cli.py bm25idf grizzly
+```
+
+Output:
+```bash
+BM25 IDF score of 'grizzly': 5.55
+```
