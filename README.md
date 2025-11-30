@@ -148,6 +148,7 @@ uv run cli/keyword_search_cli.py bm25tf <doc_id> <term> [k1]
 - `<doc_id>`: the document ID in which you want to calculate the BM25 TF score.
 - `<term>`: the term for which you want to calculate the BM25 TF score.
 - `[k1]` (optional): the BM25 saturation parameter, defaults to 1.5.
+- `[b]` (optional): the BM25 length-normalization parameter, defaults to 0.75
 
 #### Example
 ```bash
@@ -156,5 +157,5 @@ uv run cli/keyword_search_cli.py bm25tf 1 anbuselvan
 
 Output:
 ```bash
-BM25 TF score of 'anbuselvan' in document '1': 2.31
+BM25 TF score of 'anbuselvan' in document '1': 2.35
 ```

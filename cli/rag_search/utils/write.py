@@ -3,6 +3,7 @@ import pickle
 from collections import Counter
 
 from .constants import (
+    CACHE_DOC_LENGTHS,
     CACHE_DOCMAP_PATH,
     CACHE_INDEX_PATH,
     CACHE_TERM_FREQUENCIES,
@@ -20,6 +21,10 @@ def write_cache_docmap(docmap: dict[int, dict]) -> None:
 
 def write_cache_term_frequencies(term_frequencies: dict[int, Counter[str]]) -> None:
     write_pickle(CACHE_TERM_FREQUENCIES, term_frequencies, "Term frequencies")
+
+
+def write_cache_doc_lengths(doc_lengths: dict[int, int]) -> None:
+    write_pickle(CACHE_DOC_LENGTHS, doc_lengths, "Document lengths")
 
 
 def write_pickle(path: str, data: dict, msg: str) -> None:

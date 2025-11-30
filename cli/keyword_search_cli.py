@@ -7,7 +7,7 @@ from rag_search.commands.idf_command import idf_command
 from rag_search.commands.search_command import search_command
 from rag_search.commands.tf_command import tf_command
 from rag_search.commands.tfidf_command import tfidf_command
-from rag_search.utils.constants import BM25_K1
+from rag_search.utils.constants import BM25_B, BM25_K1
 
 
 def main() -> None:
@@ -49,6 +49,9 @@ def main() -> None:
     bm25_tf_parser.add_argument(
         "k1", type=float, nargs="?", default=BM25_K1, help="Tunable BM25 K1 parameter"
     )
+    bm25_tf_parser.add_argument(
+        "b", type=float, nargs="?", default=BM25_B, help="Tunable BM25 b parameter"
+    )
 
     args = parser.parse_args()
 
@@ -80,7 +83,7 @@ def main() -> None:
             bm25_idf_score = bm25_idf_command(args.term)
             print(f"BM25 IDF score of '{args.term}': {bm25_idf_score:.2f}")
         case "bm25tf":
-            bm25_tf_score = bm25_tf_command(args.doc_id, args.term, args.k1)
+            bm25_tf_score = bm25_tf_command(args.doc_id, args.term, args.k1, args.b)
             print(
                 f"BM25 TF score of '{args.term}' in document '{args.doc_id}': {bm25_tf_score:.2f}"
             )

@@ -3,6 +3,7 @@ import pickle
 from collections import Counter
 
 from .constants import (
+    CACHE_DOC_LENGTHS,
     CACHE_DOCMAP_PATH,
     CACHE_INDEX_PATH,
     CACHE_TERM_FREQUENCIES,
@@ -24,6 +25,11 @@ def load_cache_docmap() -> dict[int, dict]:
 def load_cache_term_frequencies() -> dict[int, Counter[str]]:
     term_frequencies = load_pickle(CACHE_TERM_FREQUENCIES, "Term frequencies")
     return term_frequencies
+
+
+def load_cache_doc_lengths() -> dict[int, int]:
+    doc_lengths = load_pickle(CACHE_DOC_LENGTHS, "Document lengths")
+    return doc_lengths
 
 
 def load_movies() -> list[dict]:
