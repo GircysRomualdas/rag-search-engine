@@ -159,3 +159,26 @@ Output:
 ```bash
 BM25 TF score of 'anbuselvan' in document '1': 2.35
 ```
+
+### BM25 Search (BM25 full scoring) command:
+```bash
+uv run cli/keyword_search_cli.py bm25search "<query>" [limit]
+```
+
+- `<query>`: the search query string (can contain multiple terms, so it’s best to quote it).
+- `[limit]` (optional): the maximum number of search results to return. Defaults to 5.
+
+#### Example
+```bash
+uv run cli/keyword_search_cli.py bm25search "space adventure"
+```
+
+Output:
+```bash
+Searching for: space adventure
+1. (1763) Space Ace - Score: 10.65
+2. (841) The Adventures of the Galaxy Rangers - Score: 9.53
+3. (4946) Titanfall - Score: 9.12
+4. (4430) House II: The Second Story - Score: 7.27
+5. (3216) Les ma\u00eetres du temps - Score: 6.85
+```

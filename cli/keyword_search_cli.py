@@ -1,13 +1,14 @@
 import argparse
 
 from rag_search.commands.bm25_idf_command import bm25_idf_command
+from rag_search.commands.bm25_search_command import bm25_search_command
 from rag_search.commands.bm25_tf_command import bm25_tf_command
 from rag_search.commands.build_command import build_command
 from rag_search.commands.idf_command import idf_command
 from rag_search.commands.search_command import search_command
 from rag_search.commands.tf_command import tf_command
 from rag_search.commands.tfidf_command import tfidf_command
-from rag_search.utils.constants import BM25_B, BM25_K1
+from rag_search.utils.constants import BM25_B, BM25_K1, DEFAULT_SEARCH_LIMIT
 
 
 def main() -> None:
@@ -53,6 +54,18 @@ def main() -> None:
         "b", type=float, nargs="?", default=BM25_B, help="Tunable BM25 b parameter"
     )
 
+    bm25search_parser = subparsers.add_parser(
+        "bm25search", help="Search movies using full BM25 scoring"
+    )
+    bm25search_parser.add_argument("query", type=str, help="Search query")
+    bm25search_parser.add_argument(
+        "limit",
+        type=int,
+        nargs="?",
+        default=DEFAULT_SEARCH_LIMIT,
+        help="Search result limit",
+    )
+
     args = parser.parse_args()
 
     match args.command:
@@ -87,6 +100,13 @@ def main() -> None:
             print(
                 f"BM25 TF score of '{args.term}' in document '{args.doc_id}': {bm25_tf_score:.2f}"
             )
+        case "bm25search":
+            print(f"Searching for: {args.query}")
+            results, docmap = bm25_search_command(args.query, args.limit)
+
+            for rank, (doc_id, score) in enumerate(results, start=1):
+                title = docmap[doc_id]["title"]
+                print(f"{rank}. ({doc_id}) {title} - Score: {score:.2f}")
         case _:
             parser.print_help()
 

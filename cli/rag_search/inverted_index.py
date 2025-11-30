@@ -1,7 +1,7 @@
 import math
 from collections import Counter
 
-from .utils.constants import BM25_B, BM25_K1
+from .utils.constants import BM25_B, BM25_K1, DEFAULT_SEARCH_LIMIT
 from .utils.load import (
     load_cache_doc_lengths,
     load_cache_docmap,
@@ -114,3 +114,28 @@ class InvertedIndex:
         length_norm = 1 - b + b * length_ratio
         bm25_tf = (term_frequency * (k1 + 1)) / (term_frequency + k1 * length_norm)
         return bm25_tf
+
+    def bm25(self, doc_id: int, term: str) -> float:
+        bm25_score = self.get_bm25_tf(doc_id, term) * self.get_bm25_idf(term)
+        return bm25_score
+
+    def bm25_search(
+        self, query: str, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[tuple[int, float]]:
+        tokens = tokenize_text(query)
+        bm25_scores: dict[int, float] = {}
+
+        for doc_id in self.docmap:
+            total_score = 0.0
+            for token in tokens:
+                total_score += self.bm25(doc_id, token)
+            bm25_scores[doc_id] = total_score
+
+        sorted_scores = sorted(
+            bm25_scores.items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )
+        top_scores = sorted_scores[:limit]
+
+        return top_scores
