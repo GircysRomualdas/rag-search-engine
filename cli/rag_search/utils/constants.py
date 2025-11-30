@@ -1,5 +1,6 @@
 import os
 
+BM25_K1 = 1.5
 DEFAULT_SEARCH_LIMIT = 5
 
 PROJECT_ROOT = os.path.dirname(

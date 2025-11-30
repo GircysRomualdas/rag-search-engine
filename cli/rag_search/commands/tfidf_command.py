@@ -1,7 +1,7 @@
 from ..inverted_index import InvertedIndex
 
 
-def tfidf_command(doc_id: int, term: str):
+def tfidf_command(doc_id: int, term: str) -> float:
     inverted_index = InvertedIndex()
     inverted_index.load()
     tf = inverted_index.get_term_frequencies(doc_id, term)

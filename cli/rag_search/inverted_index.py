@@ -1,6 +1,7 @@
 import math
 from collections import Counter
 
+from .utils.constants import BM25_K1
 from .utils.load import (
     load_cache_docmap,
     load_cache_index,
@@ -86,3 +87,8 @@ class InvertedIndex:
             (doc_count - term_doc_count + 0.5) / (term_doc_count + 0.5) + 1
         )
         return inverse_document_frequency
+
+    def get_bm25_tf(self, doc_id: int, term: str, k1=BM25_K1) -> float:
+        term_frequency = self.get_term_frequencies(doc_id, term)
+        bm25_tf = (term_frequency * (k1 + 1)) / (term_frequency + k1)
+        return bm25_tf
