@@ -182,3 +182,18 @@ Searching for: space adventure
 4. (4430) House II: The Second Story - Score: 7.27
 5. (3216) Les ma\u00eetres du temps - Score: 6.85
 ```
+
+### Verify command:
+```bash
+uv run cli/semantic_search_cli.py verify
+```
+
+Output:
+```bash
+Model loaded: SentenceTransformer(
+  (0): Transformer({'max_seq_length': 256, 'do_lower_case': False, 'architecture': 'BertModel'})
+  (1): Pooling({'word_embedding_dimension': 384, 'pooling_mode_cls_token': False, 'pooling_mode_mean_tokens': True, 'pooling_mode_max_tokens': False, 'pooling_mode_mean_sqrt_len_tokens': False, 'pooling_mode_weightedmean_tokens': False, 'pooling_mode_lasttoken': False, 'include_prompt': True})
+  (2): Normalize()
+)
+Max sequence length: 256
+```
