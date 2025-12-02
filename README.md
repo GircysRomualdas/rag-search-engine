@@ -35,7 +35,9 @@ uv pip install -e .
 
 ## Usage
 
-### Build command:
+### Keywird search
+
+#### Build command:
 ```bash
 uv run cli/keyword_search_cli.py build
 ```
@@ -48,14 +50,14 @@ Document map written to cache/docmap.pkl
 Inverted index built successfully.
 ```
 
-### Search command:
+#### Search command:
 ```bash
 uv run cli/keyword_search_cli.py search <query>
 ```
 
 - `<query>`: the text you want to search for.
 
-#### Example
+##### Example
 ```bash
 uv run cli/keyword_search_cli.py search "the hot shot"
 ```
@@ -70,7 +72,7 @@ Searching for: the hot shot
 5. Killshot
 ```
 
-### Term frequency (TF) command:
+#### Term frequency (TF) command:
 ```bash
 uv run cli/keyword_search_cli.py tf <doc_id> <term>
 ```
@@ -78,7 +80,7 @@ uv run cli/keyword_search_cli.py tf <doc_id> <term>
 - `<doc_id>`: the ID of the document.
 - `<term>`: the term whose frequency you want to retrieve.
 
-#### Example
+##### Example
 ```bash
 uv run cli/keyword_search_cli.py tf 424 trapper
 ```
@@ -88,14 +90,14 @@ Output:
 Term frequency of 'trapper' in document 424: 4
 ```
 
-### Inverse document frequency (IDF) command:
+#### Inverse document frequency (IDF) command:
 ```bash
 uv run cli/keyword_search_cli.py idf <term>
 ```
 
 - `<term>`: the term for which you want to calculate the Inverse Document Frequency.
 
-#### Example
+##### Example
 ```bash
 uv run cli/keyword_search_cli.py idf grizzly
 ```
@@ -105,7 +107,7 @@ Output:
 Inverse document frequency of 'grizzly': 5.52
 ```
 
-### Term Frequency-Inverse Document Frequency (TF-IDF) command:
+#### Term Frequency-Inverse Document Frequency (TF-IDF) command:
 ```bash
 uv run cli/keyword_search_cli.py tfidf <doc_id> <term>
 ```
@@ -113,7 +115,7 @@ uv run cli/keyword_search_cli.py tfidf <doc_id> <term>
 - `<doc_id>`: the ID of the document to score.
 - `<term>`: the term for which you want to calculate the TF-IDF score.
 
-#### Example
+##### Example
 ```bash
 uv run cli/keyword_search_cli.py tfidf 424 trapper
 ```
@@ -123,14 +125,14 @@ Output:
 TF-IDF score of 'trapper' in document '424': 24.13
 ```
 
-### BM25 Inverse Document Frequency (BM25 IDF) command:
+#### BM25 Inverse Document Frequency (BM25 IDF) command:
 ```bash
 uv run cli/keyword_search_cli.py bm25idf <term>
 ```
 
 - `<term>`: the term for which you want to calculate the BM25 IDF score.
 
-#### Example
+##### Example
 ```bash
 uv run cli/keyword_search_cli.py bm25idf grizzly
 ```
@@ -140,7 +142,7 @@ Output:
 BM25 IDF score of 'grizzly': 5.55
 ```
 
-### BM25 Term Frequency (BM25 TF) command:
+#### BM25 Term Frequency (BM25 TF) command:
 ```bash
 uv run cli/keyword_search_cli.py bm25tf <doc_id> <term> [k1]
 ```
@@ -150,7 +152,7 @@ uv run cli/keyword_search_cli.py bm25tf <doc_id> <term> [k1]
 - `[k1]` (optional): the BM25 saturation parameter, defaults to 1.5.
 - `[b]` (optional): the BM25 length-normalization parameter, defaults to 0.75
 
-#### Example
+##### Example
 ```bash
 uv run cli/keyword_search_cli.py bm25tf 1 anbuselvan
 ```
@@ -160,7 +162,7 @@ Output:
 BM25 TF score of 'anbuselvan' in document '1': 2.35
 ```
 
-### BM25 Search (BM25 full scoring) command:
+#### BM25 Search (BM25 full scoring) command:
 ```bash
 uv run cli/keyword_search_cli.py bm25search "<query>" [limit]
 ```
@@ -168,7 +170,7 @@ uv run cli/keyword_search_cli.py bm25search "<query>" [limit]
 - `<query>`: the search query string (can contain multiple terms, so it’s best to quote it).
 - `[limit]` (optional): the maximum number of search results to return. Defaults to 5.
 
-#### Example
+##### Example
 ```bash
 uv run cli/keyword_search_cli.py bm25search "space adventure"
 ```
@@ -183,7 +185,11 @@ Searching for: space adventure
 5. (3216) Les ma\u00eetres du temps - Score: 6.85
 ```
 
-### Verify command:
+---
+
+### Semantic search
+
+#### Verify command:
 ```bash
 uv run cli/semantic_search_cli.py verify
 ```
@@ -196,4 +202,23 @@ Model loaded: SentenceTransformer(
   (2): Normalize()
 )
 Max sequence length: 256
+```
+
+#### Embed text command:
+```bash
+uv run cli/semantic_search_cli.py embed_text <text>
+```
+
+- `<text>`: the text you want to generate an embedding for.
+
+##### Example
+```bash
+uv run cli/semantic_search_cli.py embed_text "Luke, I am your father"
+```
+
+Output:
+```bash
+Text: Luke, I am your father
+First 3 dimensions: [-0.03583722 -0.01693317  0.04318329]
+Dimensions: 384
 ```
