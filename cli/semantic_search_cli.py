@@ -1,5 +1,6 @@
 import argparse
 
+from lib.semantic_search.commands.embed_query_text_command import embed_query_text
 from lib.semantic_search.commands.embed_text_command import embed_text_command
 from lib.semantic_search.commands.verify_command import verify_model_command
 from lib.semantic_search.commands.verify_embeddings_command import (
@@ -13,12 +14,19 @@ def main():
 
     subparsers.add_parser("verify", help="Verify that the embedding model is loaded")
 
-    embed_text_parser = subparsers.add_parser(
+    single_embed_parser = subparsers.add_parser(
         "embed_text", help="Generate an embedding for a single text"
     )
-    embed_text_parser.add_argument("text", type=str, help="Text to embed")
+    single_embed_parser.add_argument("text", type=str, help="Text to embed")
 
-    subparsers.add_parser("verify_embeddings", help="Verify embeddings")
+    subparsers.add_parser(
+        "verify_embeddings", help="Verify embeddings for the movie dataset"
+    )
+
+    embed_query_parser = subparsers.add_parser(
+        "embedquery", help="Generate an embedding for a search query"
+    )
+    embed_query_parser.add_argument("query", type=str, help="Query to embed")
 
     args = parser.parse_args()
 
@@ -29,6 +37,8 @@ def main():
             embed_text_command(args.text)
         case "verify_embeddings":
             verify_embeddings_command()
+        case "embedquery":
+            embed_query_text(args.query)
         case _:
             parser.print_help()
 

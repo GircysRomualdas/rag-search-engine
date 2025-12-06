@@ -233,3 +233,22 @@ Output:
 Number of docs:   5000
 Embeddings shape: 5000 vectors in 384 dimensions
 ```
+
+#### Embed query command:
+```bash
+uv run cli/semantic_search_cli.py embedquery <query>
+```
+
+- `<query>`: the search query you want to generate an embedding for.
+
+##### Example
+```bash
+uv run cli/semantic_search_cli.py embedquery "funny bear movies"
+```
+
+Output:
+```bash
+Query: funny bear movies
+First 5 dimensions: [-0.07288318 -0.01480833  0.00170603  0.07981379  0.01246783]
+Shape: (384,)
+```
