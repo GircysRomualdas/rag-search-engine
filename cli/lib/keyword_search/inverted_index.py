@@ -1,16 +1,16 @@
 import math
 from collections import Counter
 
-from .utils.constants import BM25_B, BM25_K1, DEFAULT_SEARCH_LIMIT
-from .utils.load import (
+from lib.utils.constants import BM25_B, BM25_K1, DEFAULT_SEARCH_LIMIT
+from lib.utils.load import (
     load_cache_doc_lengths,
     load_cache_docmap,
     load_cache_index,
     load_cache_term_frequencies,
     load_movies,
 )
-from .utils.utils import tokenize_text
-from .utils.write import (
+from lib.utils.utils import tokenize_text
+from lib.utils.write import (
     write_cache_doc_lengths,
     write_cache_docmap,
     write_cache_index,

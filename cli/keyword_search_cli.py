@@ -1,14 +1,14 @@
 import argparse
 
-from keyword_search.commands.bm25_idf_command import bm25_idf_command
-from keyword_search.commands.bm25_search_command import bm25_search_command
-from keyword_search.commands.bm25_tf_command import bm25_tf_command
-from keyword_search.commands.build_command import build_command
-from keyword_search.commands.idf_command import idf_command
-from keyword_search.commands.search_command import search_command
-from keyword_search.commands.tf_command import tf_command
-from keyword_search.commands.tfidf_command import tfidf_command
-from keyword_search.utils.constants import BM25_B, BM25_K1, DEFAULT_SEARCH_LIMIT
+from lib.keyword_search.commands.bm25_idf_command import bm25_idf_command
+from lib.keyword_search.commands.bm25_search_command import bm25_search_command
+from lib.keyword_search.commands.bm25_tf_command import bm25_tf_command
+from lib.keyword_search.commands.build_command import build_command
+from lib.keyword_search.commands.idf_command import idf_command
+from lib.keyword_search.commands.search_command import search_command
+from lib.keyword_search.commands.tf_command import tf_command
+from lib.keyword_search.commands.tfidf_command import tfidf_command
+from lib.utils.constants import BM25_B, BM25_K1, DEFAULT_SEARCH_LIMIT
 
 
 def main() -> None:

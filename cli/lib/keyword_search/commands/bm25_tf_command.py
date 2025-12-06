@@ -1,5 +1,6 @@
+from lib.utils.constants import BM25_B, BM25_K1
+
 from ..inverted_index import InvertedIndex
-from ..utils.constants import BM25_B, BM25_K1
 
 
 def bm25_tf_command(

@@ -222,3 +222,14 @@ Text: Luke, I am your father
 First 3 dimensions: [-0.03583722 -0.01693317  0.04318329]
 Dimensions: 384
 ```
+
+#### Verify embeddings command:
+```bash
+uv run cli/semantic_search_cli.py verify_embeddings
+```
+
+Output:
+```bash
+Number of docs:   5000
+Embeddings shape: 5000 vectors in 384 dimensions
+```

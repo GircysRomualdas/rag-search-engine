@@ -1,6 +1,7 @@
+from lib.utils.constants import DEFAULT_SEARCH_LIMIT
+from lib.utils.utils import tokenize_text
+
 from ..inverted_index import InvertedIndex
-from ..utils.constants import DEFAULT_SEARCH_LIMIT
-from ..utils.utils import tokenize_text
 
 
 def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:

@@ -1,5 +1,6 @@
+from lib.utils.constants import DEFAULT_SEARCH_LIMIT
+
 from ..inverted_index import InvertedIndex
-from ..utils.constants import DEFAULT_SEARCH_LIMIT
 
 
 def bm25_search_command(
