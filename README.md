@@ -252,3 +252,34 @@ Query: funny bear movies
 First 5 dimensions: [-0.07288318 -0.01480833  0.00170603  0.07981379  0.01246783]
 Shape: (384,)
 ```
+
+#### Search command:
+```bash
+uv run cli/semantic_search_cli.py search <query> [--limit N]
+```
+
+- `<query>`: the natural language query you want to search for.
+- `--limit N` (optional): maximum number of results to return (default is 5).
+
+##### Example
+```bash
+uv run cli/semantic_search_cli.py search "funny bear movies" --limit 5
+```
+
+Output:
+```bash
+1. Bear (score: 0.5590)
+   Businessman Sam, his wife Liz and his musician brother Nick with his girlfriend Christine are drivin...
+
+2. The Great Bear (score: 0.5104)
+   Jonathan (11 years old) is playing hide in seek with his younger sister Sophie ( 6 years old ), Soph...
+
+3. A Bear for Punishment (score: 0.4949)
+   The film begins with the bear family sleeping peacefully at home, when suddenly, the alarms of dozen...
+
+4. An Unfinished Life (score: 0.4945)
+   One year ago, a wild bear stole a calf from Mitch (Morgan Freeman) and Einar\u2019s (Robert Redford)...
+
+5. Unnatural (score: 0.4904)
+   Deep in the remote wilderness of Alaska, a secretive biotechnology corporation has been conducting i...
+```

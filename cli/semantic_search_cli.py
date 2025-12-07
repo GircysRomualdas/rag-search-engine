@@ -2,10 +2,12 @@ import argparse
 
 from lib.semantic_search.commands.embed_query_text_command import embed_query_text
 from lib.semantic_search.commands.embed_text_command import embed_text_command
+from lib.semantic_search.commands.search_command import search_command
 from lib.semantic_search.commands.verify_command import verify_model_command
 from lib.semantic_search.commands.verify_embeddings_command import (
     verify_embeddings_command,
 )
+from lib.utils.constants import DEFAULT_SEARCH_LIMIT
 
 
 def main():
@@ -28,6 +30,14 @@ def main():
     )
     embed_query_parser.add_argument("query", type=str, help="Query to embed")
 
+    search_parser = subparsers.add_parser(
+        "search", help="Search for movies using semantic search"
+    )
+    search_parser.add_argument("query", type=str, help="Search query")
+    search_parser.add_argument(
+        "--limit", type=int, default=5, help="Number of results to return"
+    )
+
     args = parser.parse_args()
 
     match args.command:
@@ -39,6 +49,8 @@ def main():
             verify_embeddings_command()
         case "embedquery":
             embed_query_text(args.query)
+        case "search":
+            search_command(args.query, args.limit)
         case _:
             parser.print_help()
 
