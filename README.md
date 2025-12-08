@@ -1,13 +1,22 @@
 # RAG search engine
 
 A semantic search engine using RAG and LLMs to power intelligent movie search.
+It includes classic keyword ranking, semantic embeddings, and basic RAG-style chunking utilities.
 
 This is the starter code used in Boot.dev's [Learn Retrieval Augmented Generation](https://www.boot.dev/courses/learn-retrieval-augmented-generation) course.
 
 ---
 
+## Features
+
+- Classic keyword search with TF, IDF, TF‑IDF, and BM25 scoring
+- Semantic search over movie descriptions using sentence embeddings
+- Simple fixed-size text chunking for long documents (RAG prep)
+
+---
+
 ## Requirements
-- Python 3
+- Python 3.12+
 - uv (if not installed: `pip install uv`)
 
 ---
@@ -27,15 +36,29 @@ source .venv/bin/activate
 uv pip install -e .
 ```
 
-4. Create a file at `data/movies.json` and populate it with the JSON movie data from [movie dataset](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/course-rag-movies.json)
+4. Create a file at `data/movies.json` and populate it with the JSON movie data from [movie dataset file](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/course-rag-movies.json)
 
-5. Create a file at `data/stopwords.txt` and populate it with stop words from [The list of stop words](https://countwordsfree.com/stopwords)
+5. Create a file at `data/stopwords.txt` and populate it with stop words from [this list of stop words](https://countwordsfree.com/stopwords)
 
 ---
 
 ## Usage
 
-### Keywird search
+### Keyword search
+
+#### Keyword search commands
+| Command                                   | Purpose                         |
+|-------------------------------------------|---------------------------------|
+| `build`                                   | Parse `movies.json` and build the cached inverted index and doc map.|
+| `search <query>`                          | Keyword search ranked by raw term frequency.|
+| `tf <doc_id> <term>`                      | Show how many times `<term>` appears in document `<doc_id>`.|
+| `idf <term>`                              | Show how rare `<term>` is across all documents (inverse doc frequency).|
+| `tfidf <doc_id> <term>`                   | Compute the TF‑IDF relevance score of `<term>` in `<doc_id>`.|
+| `bm25idf <term>`                          | Show the BM25‑style IDF value for `<term>`.|
+| `bm25tf <doc_id> <term> [k1] [b]`         | Compute the BM25 term-frequency score for `<term>` in `<doc_id>`.|
+| `bm25search "<query>" [limit]`            | Full BM25 ranking search over all documents for `<query>`.|
+
+---
 
 #### Build command:
 ```bash
@@ -49,6 +72,8 @@ Inverted index written to cache/index.pkl
 Document map written to cache/docmap.pkl
 Inverted index built successfully.
 ```
+
+---
 
 #### Search command:
 ```bash
@@ -72,6 +97,8 @@ Searching for: the hot shot
 5. Killshot
 ```
 
+---
+
 #### Term frequency (TF) command:
 ```bash
 uv run cli/keyword_search_cli.py tf <doc_id> <term>
@@ -90,6 +117,8 @@ Output:
 Term frequency of 'trapper' in document 424: 4
 ```
 
+---
+
 #### Inverse document frequency (IDF) command:
 ```bash
 uv run cli/keyword_search_cli.py idf <term>
@@ -106,6 +135,8 @@ Output:
 ```bash
 Inverse document frequency of 'grizzly': 5.52
 ```
+
+---
 
 #### Term Frequency-Inverse Document Frequency (TF-IDF) command:
 ```bash
@@ -125,6 +156,8 @@ Output:
 TF-IDF score of 'trapper' in document '424': 24.13
 ```
 
+---
+
 #### BM25 Inverse Document Frequency (BM25 IDF) command:
 ```bash
 uv run cli/keyword_search_cli.py bm25idf <term>
@@ -141,6 +174,8 @@ Output:
 ```bash
 BM25 IDF score of 'grizzly': 5.55
 ```
+
+---
 
 #### BM25 Term Frequency (BM25 TF) command:
 ```bash
@@ -161,6 +196,8 @@ Output:
 ```bash
 BM25 TF score of 'anbuselvan' in document '1': 2.35
 ```
+
+---
 
 #### BM25 Search (BM25 full scoring) command:
 ```bash
@@ -189,6 +226,18 @@ Searching for: space adventure
 
 ### Semantic search
 
+#### Semantic search commands
+| Command                                             | Purpose                               |
+|-----------------------------------------------------|---------------------------------------|
+| `verify`                                            | Load the embedding model and print basic model and config information.|
+| `embed_text <text>`                                 | Generate and inspect an embedding vector for arbitrary `<text>`.|
+| `verify_embeddings`                                 | Verify that precomputed movie embeddings exist and match the dataset.|
+| `embedquery <query>`                                | Embed a natural-language `<query>` for use in semantic search.|
+| `search <query> [--limit N]`                        | Rank movies by cosine similarity between `<query>` and movie embeddings.|
+| `chunk <text> [--chunk-size N]`                     | Split long `<text>` into fixed-size word chunks for downstream RAG use.|
+
+---
+
 #### Verify command:
 ```bash
 uv run cli/semantic_search_cli.py verify
@@ -203,6 +252,8 @@ Model loaded: SentenceTransformer(
 )
 Max sequence length: 256
 ```
+
+---
 
 #### Embed text command:
 ```bash
@@ -223,7 +274,9 @@ First 3 dimensions: [-0.03583722 -0.01693317  0.04318329]
 Dimensions: 384
 ```
 
-#### Verify embeddings command:
+---
+
+#### Verify movie embeddings command:
 ```bash
 uv run cli/semantic_search_cli.py verify_embeddings
 ```
@@ -233,6 +286,8 @@ Output:
 Number of docs:   5000
 Embeddings shape: 5000 vectors in 384 dimensions
 ```
+
+---
 
 #### Embed query command:
 ```bash
@@ -252,6 +307,8 @@ Query: funny bear movies
 First 5 dimensions: [-0.07288318 -0.01480833  0.00170603  0.07981379  0.01246783]
 Shape: (384,)
 ```
+
+---
 
 #### Search command:
 ```bash
@@ -284,6 +341,8 @@ Output:
    Deep in the remote wilderness of Alaska, a secretive biotechnology corporation has been conducting i...
 ```
 
+---
+
 #### Chunk command:
 ```bash
 uv run cli/semantic_search_cli.py chunk <text> [--chunk-size N]
@@ -304,3 +363,5 @@ Chunking 70 characters
 2. with more than ten words
 3. to see how chunking works
 ```
+
+---
