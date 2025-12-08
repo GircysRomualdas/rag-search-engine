@@ -1,5 +1,6 @@
 import argparse
 
+from lib.semantic_search.commands.chunk_command import chunk_command
 from lib.semantic_search.commands.embed_query_text_command import embed_query_text
 from lib.semantic_search.commands.embed_text_command import embed_text_command
 from lib.semantic_search.commands.search_command import search_command
@@ -7,7 +8,7 @@ from lib.semantic_search.commands.verify_command import verify_model_command
 from lib.semantic_search.commands.verify_embeddings_command import (
     verify_embeddings_command,
 )
-from lib.utils.constants import DEFAULT_SEARCH_LIMIT
+from lib.utils.constants import DEFAULT_CHUNK_SIZE, DEFAULT_SEARCH_LIMIT
 
 
 def main():
@@ -35,7 +36,21 @@ def main():
     )
     search_parser.add_argument("query", type=str, help="Search query")
     search_parser.add_argument(
-        "--limit", type=int, default=5, help="Number of results to return"
+        "--limit",
+        type=int,
+        default=DEFAULT_SEARCH_LIMIT,
+        help="Number of results to return",
+    )
+
+    chunk_parser = subparsers.add_parser(
+        "chunk", help="Split text into fixed-size chunks"
+    )
+    chunk_parser.add_argument("text", type=str, help="Text to chunk")
+    chunk_parser.add_argument(
+        "--chunk-size",
+        type=int,
+        default=DEFAULT_CHUNK_SIZE,
+        help="Size of each chunk in words",
     )
 
     args = parser.parse_args()
@@ -51,6 +66,8 @@ def main():
             embed_query_text(args.query)
         case "search":
             search_command(args.query, args.limit)
+        case "chunk":
+            chunk_command(args.text, args.chunk_size)
         case _:
             parser.print_help()
 

@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-from lib.utils.constants import CACHE_MOVIE_EMBEDDINGS_PATH
+from lib.utils.constants import CACHE_MOVIE_EMBEDDINGS_PATH, DEFAULT_CHUNK_SIZE
 from sentence_transformers import SentenceTransformer
 
 
@@ -88,3 +88,15 @@ def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
         return 0.0
 
     return dot_product / (norm1 * norm2)
+
+
+def get_text_chunks(text: str, chunk_size: int = DEFAULT_CHUNK_SIZE) -> list[str]:
+    words = text.split()
+    chunks = []
+
+    for i in range(0, len(words), chunk_size):
+        chunk_words = words[i : i + chunk_size]
+        chunk_text = " ".join(chunk_words)
+        chunks.append(chunk_text)
+
+    return chunks

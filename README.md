@@ -283,3 +283,24 @@ Output:
 5. Unnatural (score: 0.4904)
    Deep in the remote wilderness of Alaska, a secretive biotechnology corporation has been conducting i...
 ```
+
+#### Chunk command:
+```bash
+uv run cli/semantic_search_cli.py chunk <text> [--chunk-size N]
+```
+
+- `<text>`: the full text you want to split into chunks.
+- `--chunk-size N` (optional): number of words per chunk (defaults to 200).
+
+##### Example
+```bash
+uv run cli/semantic_search_cli.py chunk "This is a test text with more than ten words to see how chunking works" --chunk-size 5
+```
+
+Output:
+```bash
+Chunking 70 characters
+1. This is a test text
+2. with more than ten words
+3. to see how chunking works
+```
