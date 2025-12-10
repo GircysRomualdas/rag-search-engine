@@ -8,7 +8,11 @@ from lib.semantic_search.commands.verify_command import verify_model_command
 from lib.semantic_search.commands.verify_embeddings_command import (
     verify_embeddings_command,
 )
-from lib.utils.constants import DEFAULT_CHUNK_SIZE, DEFAULT_SEARCH_LIMIT
+from lib.utils.constants import (
+    DEFAULT_CHUNK_OVERLAP,
+    DEFAULT_CHUNK_SIZE,
+    DEFAULT_SEARCH_LIMIT,
+)
 
 
 def main():
@@ -43,7 +47,7 @@ def main():
     )
 
     chunk_parser = subparsers.add_parser(
-        "chunk", help="Split text into fixed-size chunks"
+        "chunk", help="Split text into fixed-size chunks with optional overlap"
     )
     chunk_parser.add_argument("text", type=str, help="Text to chunk")
     chunk_parser.add_argument(
@@ -51,6 +55,12 @@ def main():
         type=int,
         default=DEFAULT_CHUNK_SIZE,
         help="Size of each chunk in words",
+    )
+    chunk_parser.add_argument(
+        "--overlap",
+        type=int,
+        default=DEFAULT_CHUNK_OVERLAP,
+        help="Number of words to overlap between chunks",
     )
 
     args = parser.parse_args()
@@ -67,7 +77,7 @@ def main():
         case "search":
             search_command(args.query, args.limit)
         case "chunk":
-            chunk_command(args.text, args.chunk_size)
+            chunk_command(args.text, args.chunk_size, args.overlap)
         case _:
             parser.print_help()
 

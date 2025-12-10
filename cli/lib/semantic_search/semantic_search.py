@@ -1,7 +1,11 @@
 import os
 
 import numpy as np
-from lib.utils.constants import CACHE_MOVIE_EMBEDDINGS_PATH, DEFAULT_CHUNK_SIZE
+from lib.utils.constants import (
+    CACHE_MOVIE_EMBEDDINGS_PATH,
+    DEFAULT_CHUNK_OVERLAP,
+    DEFAULT_CHUNK_SIZE,
+)
 from sentence_transformers import SentenceTransformer
 
 
@@ -90,13 +94,20 @@ def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
     return dot_product / (norm1 * norm2)
 
 
-def get_text_chunks(text: str, chunk_size: int = DEFAULT_CHUNK_SIZE) -> list[str]:
+def get_text_chunks(
+    text: str,
+    chunk_size: int = DEFAULT_CHUNK_SIZE,
+    overlap: int = DEFAULT_CHUNK_OVERLAP,
+) -> list[str]:
     words = text.split()
     chunks = []
+    n_words = chunk_size - overlap
 
-    for i in range(0, len(words), chunk_size):
+    for i in range(0, len(words), n_words):
         chunk_words = words[i : i + chunk_size]
-        chunk_text = " ".join(chunk_words)
-        chunks.append(chunk_text)
+        if chunks and len(chunk_words) <= overlap:
+            break
+
+        chunks.append(" ".join(chunk_words))
 
     return chunks

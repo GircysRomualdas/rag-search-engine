@@ -234,7 +234,8 @@ Searching for: space adventure
 | `verify_embeddings`                                 | Verify that precomputed movie embeddings exist and match the dataset.|
 | `embedquery <query>`                                | Embed a natural-language `<query>` for use in semantic search.|
 | `search <query> [--limit N]`                        | Rank movies by cosine similarity between `<query>` and movie embeddings.|
-| `chunk <text> [--chunk-size N]`                     | Split long `<text>` into fixed-size word chunks for downstream RAG use.|
+| `chunk <text> [--chunk-size N] [--overlap M]`       | Split long `<text>` into word chunks, optionally with an overlap of `M` words between consecutive chunks.
+|
 
 ---
 
@@ -345,23 +346,23 @@ Output:
 
 #### Chunk command:
 ```bash
-uv run cli/semantic_search_cli.py chunk <text> [--chunk-size N]
+uv run cli/semantic_search_cli.py chunk <text> [--chunk-size N] [--overlap M]
 ```
 
 - `<text>`: the full text you want to split into chunks.
 - `--chunk-size N` (optional): number of words per chunk (defaults to 200).
+- `--overlap M` (optional): number of words to share between consecutive chunks (defaults to 0, meaning no overlap).
 
 ##### Example
 ```bash
-uv run cli/semantic_search_cli.py chunk "This is a test text with more than ten words to see how chunking works" --chunk-size 5
+uv run cli/semantic_search_cli.py chunk "This is a test text with two chunks" --chunk-size 5 --overlap 2
 ```
 
 Output:
 ```bash
-Chunking 70 characters
+Chunking 35 characters
 1. This is a test text
-2. with more than ten words
-3. to see how chunking works
+2. test text with two chunks
 ```
 
 ---
