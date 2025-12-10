@@ -1,9 +1,11 @@
 import os
+import re
 
 import numpy as np
 from lib.utils.constants import (
     CACHE_MOVIE_EMBEDDINGS_PATH,
     DEFAULT_CHUNK_OVERLAP,
+    DEFAULT_CHUNK_SENTENCE_SIZE,
     DEFAULT_CHUNK_SIZE,
 )
 from sentence_transformers import SentenceTransformer
@@ -109,5 +111,24 @@ def get_text_chunks(
             break
 
         chunks.append(" ".join(chunk_words))
+
+    return chunks
+
+
+def get_sentences_chunks(
+    text: str,
+    chunk_size: int = DEFAULT_CHUNK_SENTENCE_SIZE,
+    overlap: int = DEFAULT_CHUNK_OVERLAP,
+) -> list[str]:
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    chunks = []
+    step = chunk_size - overlap
+
+    for i in range(0, len(sentences), step):
+        chunk_sentences = sentences[i : i + chunk_size]
+        if chunks and len(chunk_sentences) <= overlap:
+            break
+
+        chunks.append(" ".join(chunk_sentences))
 
     return chunks

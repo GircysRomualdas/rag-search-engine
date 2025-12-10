@@ -229,14 +229,13 @@ Searching for: space adventure
 #### Semantic search commands
 | Command                                             | Purpose                               |
 |-----------------------------------------------------|---------------------------------------|
-| `verify`                                            | Load the embedding model and print basic model and config information.|
-| `embed_text <text>`                                 | Generate and inspect an embedding vector for arbitrary `<text>`.|
-| `verify_embeddings`                                 | Verify that precomputed movie embeddings exist and match the dataset.|
-| `embedquery <query>`                                | Embed a natural-language `<query>` for use in semantic search.|
-| `search <query> [--limit N]`                        | Rank movies by cosine similarity between `<query>` and movie embeddings.|
-| `chunk <text> [--chunk-size N] [--overlap M]`       | Split long `<text>` into word chunks, optionally with an overlap of `M` words between consecutive chunks.
-|
-
+| `verify`                                                    | Load the embedding model and print basic model and config information.|
+| `embed_text <text>`                                         | Generate and inspect an embedding vector for arbitrary `<text>`.|
+| `verify_embeddings`                                         | Verify that precomputed movie embeddings exist and match the dataset.|
+| `embedquery <query>`                                        | Embed a natural-language `<query>` for use in semantic search.|
+| `search <query> [--limit N]`                                | Rank movies by cosine similarity between `<query>` and movie embeddings.|
+| `chunk <text> [--chunk-size N] [--overlap M]`               | Split long `<text>` into word chunks, optionally with an overlap of `M` words between consecutive chunks.|
+| `semantic_chunk <text> [--max-chunk-size N] [--overlap M]`  | Split long `<text>` into sentence-based semantic chunks, optionally with sentence overlap. |
 ---
 
 #### Verify command:
@@ -363,6 +362,30 @@ Output:
 Chunking 35 characters
 1. This is a test text
 2. test text with two chunks
+```
+
+---
+
+#### Semantic chunk command:
+```bash
+uv run cli/semantic_search_cli.py semantic_chunk <text> [--max-chunk-size N] [--overlap M]
+```
+
+- `<text>`: the full text you want to split into semantic (sentence-based) chunks.
+- `--max-chunk-size N` (optional): maximum number of sentences per chunk (defaults to 4).
+- `--overlap M` (optional): number of sentences to share between consecutive chunks (defaults to 0, meaning no overlap).
+
+##### Example
+```bash
+uv run cli/semantic_search_cli.py semantic_chunk "First sentence here. Second sentence here. Third sentence here. Fourth sentence here." --max-chunk-size 2 --overlap 1
+```
+
+Output:
+```bash
+Semantically chunking 85 characters
+1. First sentence here. Second sentence here.
+2. Second sentence here. Third sentence here.
+3. Third sentence here. Fourth sentence here.
 ```
 
 ---

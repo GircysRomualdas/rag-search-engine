@@ -5,6 +5,7 @@ BM25_B = 0.75
 DEFAULT_SEARCH_LIMIT = 5
 DEFAULT_CHUNK_SIZE = 200
 DEFAULT_CHUNK_OVERLAP = 0
+DEFAULT_CHUNK_SENTENCE_SIZE = 4
 
 PROJECT_ROOT = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
