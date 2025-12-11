@@ -236,6 +236,8 @@ Searching for: space adventure
 | `search <query> [--limit N]`                                | Rank movies by cosine similarity between `<query>` and movie embeddings.|
 | `chunk <text> [--chunk-size N] [--overlap M]`               | Split long `<text>` into word chunks, optionally with an overlap of `M` words between consecutive chunks.|
 | `semantic_chunk <text> [--max-chunk-size N] [--overlap M]`  | Split long `<text>` into sentence-based semantic chunks, optionally with sentence overlap. |
+| `embed_chunks`                                              | Create and store embeddings for document chunks. |
+
 ---
 
 #### Verify command:
@@ -386,6 +388,18 @@ Semantically chunking 85 characters
 1. First sentence here. Second sentence here.
 2. Second sentence here. Third sentence here.
 3. Third sentence here. Fourth sentence here.
+```
+
+---
+
+#### Embed chunks command:
+```bash
+uv run cli/semantic_search_cli.py embed_chunks
+```
+
+Output:
+```bash
+Generated 72909 chunked embeddings
 ```
 
 ---

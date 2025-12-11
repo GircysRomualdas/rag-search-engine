@@ -7,6 +7,7 @@ from .constants import (
     CACHE_DOCMAP_PATH,
     CACHE_INDEX_PATH,
     CACHE_TERM_FREQUENCIES_PATH,
+    CHCHE_CHUNK_METADATA_PATH,
     MOVIES_DATA_PATH,
     STOP_WORDS_DATA_PATH,
 )
@@ -33,9 +34,19 @@ def load_cache_doc_lengths() -> dict[int, int]:
 
 
 def load_movies() -> list[dict]:
-    with open(MOVIES_DATA_PATH, "r") as f:
-        data = json.load(f)
+    data = load_json(MOVIES_DATA_PATH)
     return data["movies"]
+
+
+def load_chunk_metadata() -> list[dict]:
+    data = load_json(CHCHE_CHUNK_METADATA_PATH)
+    return data["chunks"]
+
+
+def load_json(path: str) -> dict:
+    with open(path, "r") as f:
+        data = json.load(f)
+    return data
 
 
 def load_stop_words() -> list[str]:

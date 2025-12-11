@@ -1,3 +1,4 @@
+import json
 import os
 import pickle
 from collections import Counter
@@ -33,3 +34,8 @@ def write_pickle(path: str, data: dict, msg: str) -> None:
 
     relative_path = os.path.relpath(path, PROJECT_ROOT)
     print(f"{msg} written to {relative_path}")
+
+
+def write_json(path: str, data) -> None:
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)

@@ -7,13 +7,14 @@ from lib.utils.constants import (
     DEFAULT_CHUNK_OVERLAP,
     DEFAULT_CHUNK_SENTENCE_SIZE,
     DEFAULT_CHUNK_SIZE,
+    DEFAULT_MODEL,
 )
 from sentence_transformers import SentenceTransformer
 
 
 class SemanticSearch:
-    def __init__(self) -> None:
-        self.model = SentenceTransformer("all-MiniLM-L6-v2")
+    def __init__(self, model: str = DEFAULT_MODEL) -> None:
+        self.model = SentenceTransformer(model)
         self.embeddings: np.ndarray = None
         self.documents: list[dict] = []
         self.document_map: dict[int, dict] = {}

@@ -7,6 +7,8 @@ DEFAULT_CHUNK_SIZE = 200
 DEFAULT_CHUNK_OVERLAP = 0
 DEFAULT_CHUNK_SENTENCE_SIZE = 4
 
+DEFAULT_MODEL = "all-MiniLM-L6-v2"
+
 PROJECT_ROOT = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
@@ -21,3 +23,5 @@ CACHE_DOCMAP_PATH = os.path.join(CACHE_DIR, "docmap.pkl")
 CACHE_TERM_FREQUENCIES_PATH = os.path.join(CACHE_DIR, "term_frequencies.pkl")
 CACHE_DOC_LENGTHS_PATH = os.path.join(CACHE_DIR, "doc_lengths.pkl")
 CACHE_MOVIE_EMBEDDINGS_PATH = os.path.join(CACHE_DIR, "movie_embeddings.npy")
+CACHE_CHUNK_EMBEDDINGS_PATH = os.path.join(CACHE_DIR, "chunk_embeddings.npy")
+CHCHE_CHUNK_METADATA_PATH = os.path.join(CACHE_DIR, "chunk_metadata.json")
