@@ -4,6 +4,7 @@ from lib.semantic_search.commands.chunk_command import chunk_command
 from lib.semantic_search.commands.embed_chunks_command import embed_chunks_command
 from lib.semantic_search.commands.embed_query_text_command import embed_query_text
 from lib.semantic_search.commands.embed_text_command import embed_text_command
+from lib.semantic_search.commands.search_chunked_command import search_chunked_command
 from lib.semantic_search.commands.search_command import search_command
 from lib.semantic_search.commands.semantic_chunk_command import semantic_chunk_command
 from lib.semantic_search.commands.verify_command import verify_model_command
@@ -80,18 +81,35 @@ def main():
     semantic_chunk_parser.add_argument(
         "--max-chunk-size",
         type=int,
-        default=4,
+        default=DEFAULT_CHUNK_SENTENCE_SIZE,
         help="Maximum size of each chunk in sentences",
     )
     semantic_chunk_parser.add_argument(
         "--overlap",
         type=int,
-        default=0,
+        default=DEFAULT_CHUNK_OVERLAP,
         help="Number of sentences to overlap between chunks",
     )
 
     # embed_chunks
     subparsers.add_parser("embed_chunks", help="embed_chunks")
+
+    # search chunked
+    search_chunked_parser = subparsers.add_parser(
+        "search_chunked",
+        help="Run chunked semantic search over movie descriptions",
+    )
+    search_chunked_parser.add_argument(
+        "query",
+        type=str,
+        help="Search query text",
+    )
+    search_chunked_parser.add_argument(
+        "--limit",
+        type=int,
+        default=DEFAULT_SEARCH_LIMIT,
+        help="Number of results to return (default: 5)",
+    )
 
     args = parser.parse_args()
 
@@ -112,6 +130,8 @@ def main():
             semantic_chunk_command(args.text, args.max_chunk_size, args.overlap)
         case "embed_chunks":
             embed_chunks_command()
+        case "search_chunked":
+            search_chunked_command(args.query, args.limit)
         case _:
             parser.print_help()
 

@@ -5,11 +5,12 @@ from lib.utils.constants import (
     CACHE_CHUNK_EMBEDDINGS_PATH,
     CHCHE_CHUNK_METADATA_PATH,
     DEFAULT_MODEL,
+    SCORE_PRECISION,
 )
 from lib.utils.load import load_chunk_metadata
 from lib.utils.write import write_json
 
-from .semantic_search import SemanticSearch, get_sentences_chunks
+from .semantic_search import SemanticSearch, cosine_similarity, get_sentences_chunks
 
 
 class ChunkedSemanticSearch(SemanticSearch):
@@ -69,3 +70,60 @@ class ChunkedSemanticSearch(SemanticSearch):
             return self.chunk_embeddings
 
         return self.build_chunk_embeddings(documents)
+
+    def search_chunks(self, query: str, limit: int = 10) -> list[dict]:
+        if self.chunk_embeddings is None:
+            raise ValueError(
+                "No chunk embeddings loaded. Call `load_or_create_chunk_embeddings` first."
+            )
+
+        embedding = self.generate_embedding(query)
+        chunk_scores = []
+
+        for i, chunk_embedding in enumerate(self.chunk_embeddings):
+            chunk_score = cosine_similarity(embedding, chunk_embedding)
+            chunk_scores.append(
+                {
+                    "chunk_idx": self.chunk_metadata[i]["chunk_idx"],
+                    "movie_idx": self.chunk_metadata[i]["movie_idx"],
+                    "score": chunk_score,
+                }
+            )
+
+        movie_scores = {}
+
+        for chunk_score in chunk_scores:
+            movie_idx = chunk_score["movie_idx"]
+
+            if (
+                movie_idx not in movie_scores
+                or chunk_score["score"] > movie_scores[movie_idx]["score"]
+            ):
+                movie_scores[movie_idx] = chunk_score
+
+        sorted_movies = sorted(
+            movie_scores.values(),
+            key=lambda d: d["score"],
+            reverse=True,
+        )
+        filtered_movies = sorted_movies[:limit]
+        result = []
+
+        for movie in filtered_movies:
+            movie_idx = movie["movie_idx"]
+            doc = self.documents[movie_idx]
+            metadata = {
+                "movie_idx": movie_idx,
+                "best_chunk_idx": movie["chunk_idx"],
+            }
+            result.append(
+                {
+                    "id": doc["id"],
+                    "title": doc["title"],
+                    "document": doc["description"][:100],
+                    "score": round(movie["score"], SCORE_PRECISION),
+                    "metadata": metadata or {},
+                }
+            )
+
+        return result

@@ -237,6 +237,7 @@ Searching for: space adventure
 | `chunk <text> [--chunk-size N] [--overlap M]`               | Split long `<text>` into word chunks, optionally with an overlap of `M` words between consecutive chunks.|
 | `semantic_chunk <text> [--max-chunk-size N] [--overlap M]`  | Split long `<text>` into sentence-based semantic chunks, optionally with sentence overlap. |
 | `embed_chunks`                                              | Create and store embeddings for document chunks. |
+| `search_chunked <query> [--limit N]`                        | Run semantic search over chunk embeddings and aggregate scores back to the most relevant movies. |
 
 ---
 
@@ -400,6 +401,39 @@ uv run cli/semantic_search_cli.py embed_chunks
 Output:
 ```bash
 Generated 72909 chunked embeddings
+```
+
+---
+
+#### Chunked semantic search command:
+```bash
+uv run cli/semantic_search_cli.py search_chunked <query> [--limit N]
+```
+
+- `<query>`: the natural-language search query you want to run against the chunked movie descriptions.
+- `--limit N` (optional): maximum number of movies to return (defaults to 5).
+
+##### Example
+```bash
+uv run cli/semantic_search_cli.py search_chunked "superhero action movie" --limit 5
+```
+
+Output:
+```bash
+1. Kick-Ass (score: 0.6386)
+   Dave Lizewski (Aaron Taylor-Johnson) opens the film with a narration about how superheroes came into...
+
+2. The Incredibles (score: 0.5386)
+   The film opens with a series of short interviews between three famous superheroes including Mr. Incr...
+
+3. Logan (score: 0.5280)
+   The film is preceded by a short film:On the streets of New York City, a mugging is taking place. Wal...
+
+4. Justice League: The Flashpoint Paradox (score: 0.5144)
+   While visiting his mother's grave, Barry Allen, known as the Flash, is alerted to a break-in by Capt...
+
+5. Justice League: Throne of Atlantis (score: 0.5117)
+   In the Atlantic Ocean, the USS California submarine picks up incoming human-like threats approaching...
 ```
 
 ---
