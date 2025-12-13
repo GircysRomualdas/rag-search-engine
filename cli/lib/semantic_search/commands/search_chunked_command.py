@@ -1,3 +1,5 @@
+import re
+
 from lib.utils.constants import DEFAULT_SEARCH_LIMIT
 from lib.utils.load import load_movies
 

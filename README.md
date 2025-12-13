@@ -66,7 +66,7 @@ uv run cli/keyword_search_cli.py build
 ```
 
 Output:
-```bash
+```
 Building inverted index...
 Inverted index written to cache/index.pkl
 Document map written to cache/docmap.pkl
@@ -88,7 +88,7 @@ uv run cli/keyword_search_cli.py search "the hot shot"
 ```
 
 Output:
-```bash
+```
 Searching for: the hot shot
 1. Hot Potato
 2. Hot Shots! Part Deux
@@ -113,7 +113,7 @@ uv run cli/keyword_search_cli.py tf 424 trapper
 ```
 
 Output:
-```bash
+```
 Term frequency of 'trapper' in document 424: 4
 ```
 
@@ -132,7 +132,7 @@ uv run cli/keyword_search_cli.py idf grizzly
 ```
 
 Output:
-```bash
+```
 Inverse document frequency of 'grizzly': 5.52
 ```
 
@@ -152,7 +152,7 @@ uv run cli/keyword_search_cli.py tfidf 424 trapper
 ```
 
 Output:
-```bash
+```
 TF-IDF score of 'trapper' in document '424': 24.13
 ```
 
@@ -171,7 +171,7 @@ uv run cli/keyword_search_cli.py bm25idf grizzly
 ```
 
 Output:
-```bash
+```
 BM25 IDF score of 'grizzly': 5.55
 ```
 
@@ -193,7 +193,7 @@ uv run cli/keyword_search_cli.py bm25tf 1 anbuselvan
 ```
 
 Output:
-```bash
+```
 BM25 TF score of 'anbuselvan' in document '1': 2.35
 ```
 
@@ -213,7 +213,7 @@ uv run cli/keyword_search_cli.py bm25search "space adventure"
 ```
 
 Output:
-```bash
+```
 Searching for: space adventure
 1. (1763) Space Ace - Score: 10.65
 2. (841) The Adventures of the Galaxy Rangers - Score: 9.53
@@ -247,7 +247,7 @@ uv run cli/semantic_search_cli.py verify
 ```
 
 Output:
-```bash
+```
 Model loaded: SentenceTransformer(
   (0): Transformer({'max_seq_length': 256, 'do_lower_case': False, 'architecture': 'BertModel'})
   (1): Pooling({'word_embedding_dimension': 384, 'pooling_mode_cls_token': False, 'pooling_mode_mean_tokens': True, 'pooling_mode_max_tokens': False, 'pooling_mode_mean_sqrt_len_tokens': False, 'pooling_mode_weightedmean_tokens': False, 'pooling_mode_lasttoken': False, 'include_prompt': True})
@@ -271,7 +271,7 @@ uv run cli/semantic_search_cli.py embed_text "Luke, I am your father"
 ```
 
 Output:
-```bash
+```
 Text: Luke, I am your father
 First 3 dimensions: [-0.03583722 -0.01693317  0.04318329]
 Dimensions: 384
@@ -285,7 +285,7 @@ uv run cli/semantic_search_cli.py verify_embeddings
 ```
 
 Output:
-```bash
+```
 Number of docs:   5000
 Embeddings shape: 5000 vectors in 384 dimensions
 ```
@@ -305,7 +305,7 @@ uv run cli/semantic_search_cli.py embedquery "funny bear movies"
 ```
 
 Output:
-```bash
+```
 Query: funny bear movies
 First 5 dimensions: [-0.07288318 -0.01480833  0.00170603  0.07981379  0.01246783]
 Shape: (384,)
@@ -327,7 +327,7 @@ uv run cli/semantic_search_cli.py search "funny bear movies" --limit 5
 ```
 
 Output:
-```bash
+```
 1. Bear (score: 0.5590)
    Businessman Sam, his wife Liz and his musician brother Nick with his girlfriend Christine are drivin...
 
@@ -361,7 +361,7 @@ uv run cli/semantic_search_cli.py chunk "This is a test text with two chunks" --
 ```
 
 Output:
-```bash
+```
 Chunking 35 characters
 1. This is a test text
 2. test text with two chunks
@@ -384,7 +384,7 @@ uv run cli/semantic_search_cli.py semantic_chunk "First sentence here. Second se
 ```
 
 Output:
-```bash
+```
 Semantically chunking 85 characters
 1. First sentence here. Second sentence here.
 2. Second sentence here. Third sentence here.
@@ -399,7 +399,7 @@ uv run cli/semantic_search_cli.py embed_chunks
 ```
 
 Output:
-```bash
+```
 Generated 72909 chunked embeddings
 ```
 
@@ -419,7 +419,7 @@ uv run cli/semantic_search_cli.py search_chunked "superhero action movie" --limi
 ```
 
 Output:
-```bash
+```
 1. Kick-Ass (score: 0.6386)
    Dave Lizewski (Aaron Taylor-Johnson) opens the film with a narration about how superheroes came into...
 

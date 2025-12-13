@@ -118,18 +118,34 @@ def get_text_chunks(
 
 def get_sentences_chunks(
     text: str,
-    chunk_size: int = DEFAULT_CHUNK_SENTENCE_SIZE,
+    max_chunk_size: int = DEFAULT_CHUNK_SENTENCE_SIZE,
     overlap: int = DEFAULT_CHUNK_OVERLAP,
 ) -> list[str]:
-    sentences = re.split(r"(?<=[.!?])\s+", text)
-    chunks = []
-    step = chunk_size - overlap
+    text = text.strip()
+    if not text:
+        return []
 
-    for i in range(0, len(sentences), step):
-        chunk_sentences = sentences[i : i + chunk_size]
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+
+    if len(sentences) == 1 and not text.endswith((".", "!", "?")):
+        sentences = [text]
+
+    chunks = []
+    i = 0
+    n_sentences = len(sentences)
+
+    while i < n_sentences:
+        chunk_sentences = sentences[i : i + max_chunk_size]
         if chunks and len(chunk_sentences) <= overlap:
             break
 
-        chunks.append(" ".join(chunk_sentences))
+        cleaned_sentences = []
+        for chunk_sentence in chunk_sentences:
+            cleaned_sentences.append(chunk_sentence.strip())
+        if not cleaned_sentences:
+            continue
+        chunk = " ".join(cleaned_sentences)
+        chunks.append(chunk)
+        i += max_chunk_size - overlap
 
     return chunks
