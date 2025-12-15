@@ -445,6 +445,7 @@ Output:
 | Command                                  | Purpose                                                                |
 |------------------------------------------|------------------------------------------------------------------------|
 | `normalize <score1> <score2> ...`        | Normalize a list of numeric scores to the 0–1 range (min–max scaling). |
+| `weighted-search <query> [--alpha A] [--limit N]`                | Rank movies using a weighted combination of BM25 (keyword) and semantic scores. |
 
 ---
 
@@ -467,4 +468,47 @@ Output:
 * 0.5000
 * 0.1818
 * 0.0000
+```
+
+---
+
+#### Weighted hybrid search command
+```bash
+uv run cli/hybrid_search_cli.py weighted-search <query> [--alpha A] [--limit N]
+```
+
+- `<query>`: the natural-language search query you want to run.
+- `--alpha A` (optional): weighting factor between keyword and semantic scores.
+  - `A = 1.0` → 100% BM25 (keyword-only)
+  - `A = 0.0` → 100% semantic
+  - defaults to `0.5` (50/50 hybrid)
+- `--limit N` (optional): maximum number of movies to return (defaults to `5`).
+
+##### Example
+```bash
+uv run cli/hybrid_search_cli.py weighted-search "British Bear" --alpha 0.5 --limit 5
+```
+
+Output:
+```
+1. Paddington
+   Hybrid Score: 0.966
+   BM25: 1.000, Semantic: 0.932
+   Deep in the rainforests of Peru, a young bear lives peacefully with his Aunt Lucy and Uncle Pastuzo,
+2. Legends of the Fall
+   Hybrid Score: 0.740
+   BM25: 0.480, Semantic: 1.000
+   Sick of betrayals the United States government perpetrated on the Native Americans, Colonel William 
+3. The Country Bears
+   Hybrid Score: 0.708
+   BM25: 0.604, Semantic: 0.812
+   Beary Barrington is a young bear who has been raised by a human family and struggles with his identi
+4. The Edge
+   Hybrid Score: 0.701
+   BM25: 0.567, Semantic: 0.836
+   Charles Morse, an intellectual billionaire with a vast knowledge of survival techniques, accompanies
+5. The Great Bear
+   Hybrid Score: 0.692
+   BM25: 0.624, Semantic: 0.760
+   Jonathan (11 years old) is playing hide in seek with his younger sister Sophie ( 6 years old ), Soph
 ```
