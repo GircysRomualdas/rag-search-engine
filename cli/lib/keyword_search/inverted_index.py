@@ -2,6 +2,7 @@ import math
 from collections import Counter
 
 from lib.utils.constants import BM25_B, BM25_K1, DEFAULT_SEARCH_LIMIT
+from lib.utils.data_models import Bm25Result, Movie, MovieId, Token, TokenCount
 from lib.utils.load import (
     load_cache_doc_lengths,
     load_cache_docmap,
@@ -20,19 +21,20 @@ from lib.utils.write import (
 
 class InvertedIndex:
     def __init__(self) -> None:
-        self.index: dict[str, set[int]] = {}
-        self.docmap: dict[int, dict] = {}
-        self.term_frequencies: dict[int, Counter[str]] = {}
-        self.doc_lengths: dict[int, int] = {}
+        self.index: dict[Token, set[MovieId]] = {}
+        self.docmap: dict[MovieId, Movie] = {}
+        self.term_frequencies: dict[MovieId, Counter[Token]] = {}
+        self.doc_lengths: dict[MovieId, TokenCount] = {}
 
-    def __add_document(self, doc_id: int, text: str) -> None:
+    def __add_document(self, raw_doc_id: int, text: str) -> None:
         preprocessed_text = tokenize_text(text)
+        doc_id = MovieId(raw_doc_id)
 
         if doc_id not in self.term_frequencies:
             self.term_frequencies[doc_id] = Counter()
         self.term_frequencies[doc_id].update(preprocessed_text)
 
-        self.doc_lengths[doc_id] = len(preprocessed_text)
+        self.doc_lengths[doc_id] = TokenCount(len(preprocessed_text))
 
         for token in preprocessed_text:
             if token not in self.index:
@@ -46,17 +48,16 @@ class InvertedIndex:
         full_length = sum(self.doc_lengths.values())
         return full_length / len(self.doc_lengths)
 
-    def get_documents(self, term: str) -> list[int]:
-        doc_ids = self.index.get(term, set())
+    def get_documents(self, term: str) -> list[MovieId]:
+        doc_ids = self.index.get(Token(term), set())
         return sorted(doc_ids)
 
     def build(self) -> None:
         movies = load_movies()
-
         for movie in movies:
-            doc_id = movie["id"]
+            doc_id = movie.id
             self.docmap[doc_id] = movie
-            text = f"{movie['title']} {movie['description']}"
+            text = f"{movie.title} {movie.description}"
             self.__add_document(doc_id, text)
 
     def save(self) -> None:
@@ -71,7 +72,8 @@ class InvertedIndex:
         self.term_frequencies = load_cache_term_frequencies()
         self.doc_lengths = load_cache_doc_lengths()
 
-    def get_term_frequencies(self, doc_id: int, term: str) -> int:
+    def get_term_frequencies(self, raw_doc_id: int, term: str) -> int:
+        doc_id = MovieId(raw_doc_id)
         tokens = tokenize_text(term)
         if len(tokens) != 1:
             raise ValueError("term must be a single token")
@@ -103,11 +105,11 @@ class InvertedIndex:
         return inverse_document_frequency
 
     def get_bm25_tf(
-        self, doc_id: int, term: str, k1: float = BM25_K1, b: float = BM25_B
+        self, doc_id: MovieId, term: str, k1: float = BM25_K1, b: float = BM25_B
     ) -> float:
         term_frequency = self.get_term_frequencies(doc_id, term)
         avg_doc_length = self.__get_avg_doc_length()
-        length_ratio = 0
+        length_ratio = 0.0
         if avg_doc_length != 0:
             length_ratio = self.doc_lengths[doc_id] / avg_doc_length
 
@@ -115,15 +117,14 @@ class InvertedIndex:
         bm25_tf = (term_frequency * (k1 + 1)) / (term_frequency + k1 * length_norm)
         return bm25_tf
 
-    def bm25(self, doc_id: int, term: str) -> float:
-        bm25_score = self.get_bm25_tf(doc_id, term) * self.get_bm25_idf(term)
-        return bm25_score
+    def bm25(self, doc_id: MovieId, term: str) -> float:
+        return self.get_bm25_tf(doc_id, term) * self.get_bm25_idf(term)
 
     def bm25_search(
         self, query: str, limit: int = DEFAULT_SEARCH_LIMIT
-    ) -> list[tuple[int, float]]:
+    ) -> list[Bm25Result]:
         tokens = tokenize_text(query)
-        bm25_scores: dict[int, float] = {}
+        bm25_scores = {}
 
         for doc_id in self.docmap:
             total_score = 0.0
@@ -138,4 +139,6 @@ class InvertedIndex:
         )
         top_scores = sorted_scores[:limit]
 
-        return top_scores
+        return [
+            Bm25Result(movie_id=doc_id, score=score) for doc_id, score in top_scores
+        ]

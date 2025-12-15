@@ -11,36 +11,51 @@ from .constants import (
     MOVIES_DATA_PATH,
     STOP_WORDS_DATA_PATH,
 )
+from .data_models import ChunkMetadata, Movie, MovieId, Token, TokenCount
 
 
-def load_cache_index() -> dict[str, set[int]]:
-    index = load_pickle(CACHE_INDEX_PATH, "Inverted index")
+def load_cache_index() -> dict[Token, set[MovieId]]:
+    index = load_pickle(CACHE_INDEX_PATH)
     return index
 
 
-def load_cache_docmap() -> dict[int, dict]:
-    docmap = load_pickle(CACHE_DOCMAP_PATH, "Document map")
-    return docmap
+def load_cache_docmap() -> dict[MovieId, Movie]:
+    raw_docmap = load_pickle(CACHE_DOCMAP_PATH)
+    return {MovieId(doc_id): movie for doc_id, movie in raw_docmap.items()}
 
 
-def load_cache_term_frequencies() -> dict[int, Counter[str]]:
-    term_frequencies = load_pickle(CACHE_TERM_FREQUENCIES_PATH, "Term frequencies")
+def load_cache_term_frequencies() -> dict[MovieId, Counter[Token]]:
+    term_frequencies = load_pickle(CACHE_TERM_FREQUENCIES_PATH)
     return term_frequencies
 
 
-def load_cache_doc_lengths() -> dict[int, int]:
-    doc_lengths = load_pickle(CACHE_DOC_LENGTHS_PATH, "Document lengths")
+def load_cache_doc_lengths() -> dict[MovieId, TokenCount]:
+    doc_lengths = load_pickle(CACHE_DOC_LENGTHS_PATH)
     return doc_lengths
 
 
-def load_movies() -> list[dict]:
+def load_movies() -> list[Movie]:
     data = load_json(MOVIES_DATA_PATH)
-    return data["movies"]
+    return [
+        Movie(
+            id=MovieId(m["id"]),
+            title=m["title"],
+            description=m["description"],
+        )
+        for m in data["movies"]
+    ]
 
 
-def load_chunk_metadata() -> list[dict]:
+def load_chunk_metadata() -> list[ChunkMetadata]:
     data = load_json(CHCHE_CHUNK_METADATA_PATH)
-    return data["chunks"]
+    return [
+        ChunkMetadata(
+            movie_index=c["movie_idx"],
+            chunk_index=c["chunk_idx"],
+            total_chunks=c["total_chunks"],
+        )
+        for c in data["chunks"]
+    ]
 
 
 def load_json(path: str) -> dict:
@@ -55,10 +70,10 @@ def load_stop_words() -> list[str]:
     return data
 
 
-def load_pickle(path: str, msg: str) -> dict:
+def load_pickle(path: str) -> dict:
     try:
         with open(path, "rb") as f:
             data = pickle.load(f)
         return data
     except FileNotFoundError:
-        raise FileNotFoundError(f"{msg} file not found: {path}")
+        raise FileNotFoundError(f"file not found: {path}")

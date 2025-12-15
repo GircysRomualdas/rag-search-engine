@@ -2,10 +2,11 @@ import string
 
 from nltk.stem import PorterStemmer
 
+from .data_models import Token
 from .load import load_stop_words
 
 
-def tokenize_text(text: str) -> list[str]:
+def tokenize_text(text: str) -> list[Token]:
     lowered_text = text.lower()
     clean_text = remove_punctuation(lowered_text)
     words = clean_text.split()
@@ -24,6 +25,6 @@ def remove_stop_words(words: list[str]) -> list[str]:
     return [word for word in words if word.lower() not in stop_words]
 
 
-def get_stems(words: list[str]) -> list[str]:
+def get_stems(words: list[str]) -> list[Token]:
     stemmer = PorterStemmer()
-    return [stemmer.stem(word) for word in words]
+    return [stemmer.stem(Token(word)) for word in words]

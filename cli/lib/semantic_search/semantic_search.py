@@ -9,6 +9,7 @@ from lib.utils.constants import (
     DEFAULT_CHUNK_SIZE,
     DEFAULT_MODEL,
 )
+from lib.utils.data_models import Movie, MovieId, SemanticResult
 from sentence_transformers import SentenceTransformer
 
 
@@ -16,8 +17,8 @@ class SemanticSearch:
     def __init__(self, model: str = DEFAULT_MODEL) -> None:
         self.model = SentenceTransformer(model)
         self.embeddings: np.ndarray = None
-        self.documents: list[dict] = []
-        self.document_map: dict[int, dict] = {}
+        self.documents: list[Movie] = []
+        self.document_map: dict[MovieId, Movie] = {}
 
     def generate_embedding(self, text: str) -> np.ndarray:
         if len(text.strip()) == 0:
@@ -26,14 +27,13 @@ class SemanticSearch:
         embeddings = self.model.encode([text])
         return embeddings[0]
 
-    def build_embeddings(self, documents: list[dict]) -> np.ndarray:
+    def build_embeddings(self, documents: list[Movie]) -> np.ndarray:
         self.documents = documents
 
         docs = []
         for document in documents:
-            self.document_map[document["id"]] = document
-
-            docs.append(f"{document['title']}: {document['description']}")
+            self.document_map[document.id] = document
+            docs.append(f"{document.title}: {document.description}")
 
         self.embeddings = self.model.encode(docs, show_progress_bar=True)
 
@@ -41,11 +41,11 @@ class SemanticSearch:
 
         return self.embeddings
 
-    def load_or_create_embeddings(self, documents: list[dict]) -> np.ndarray:
+    def load_or_create_embeddings(self, documents: list[Movie]) -> np.ndarray:
         self.documents = documents
 
         for document in documents:
-            self.document_map[document["id"]] = document
+            self.document_map[document.id] = document
 
         if os.path.exists(CACHE_MOVIE_EMBEDDINGS_PATH):
             self.embeddings = np.load(CACHE_MOVIE_EMBEDDINGS_PATH)
@@ -55,7 +55,7 @@ class SemanticSearch:
 
         return self.build_embeddings(documents)
 
-    def search(self, query: str, limit: int):
+    def search(self, query: str, limit: int) -> list[SemanticResult]:
         if self.embeddings is None:
             raise ValueError(
                 "No embeddings loaded. Call `load_or_create_embeddings` first."
@@ -63,30 +63,30 @@ class SemanticSearch:
 
         query_embedding = self.generate_embedding(query)
 
-        similarities: list[tuple[float, dict]] = []
+        similarities = []
 
         for i, doc_embedding in enumerate(self.embeddings):
-            similarity_score = cosine_similarity(query_embedding, doc_embedding)
+            similarity_score = get_cosine_similarity(query_embedding, doc_embedding)
             document = self.documents[i]
             similarities.append((similarity_score, document))
 
         similarities.sort(reverse=True, key=lambda item: item[0])
 
-        results = []
-
+        results: list[SemanticResult] = []
         for score, doc in similarities[:limit]:
             results.append(
-                {
-                    "score": score,
-                    "title": doc["title"],
-                    "description": doc["description"],
-                }
+                SemanticResult(
+                    movie_id=doc.id,
+                    title=doc.title,
+                    description=doc.description,
+                    score=score,
+                )
             )
 
         return results
 
 
-def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
+def get_cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
     dot_product = np.dot(vec1, vec2)
     norm1 = np.linalg.norm(vec1)
     norm2 = np.linalg.norm(vec2)

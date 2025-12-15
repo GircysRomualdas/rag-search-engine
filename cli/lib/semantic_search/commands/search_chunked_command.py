@@ -1,5 +1,3 @@
-import re
-
 from lib.utils.constants import DEFAULT_SEARCH_LIMIT
 from lib.utils.load import load_movies
 
@@ -13,9 +11,9 @@ def search_chunked_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> Non
     results = chunked_semantic_search.search_chunks(query, limit)
 
     for i, result in enumerate(results, start=1):
-        title = result["title"]
-        score = result["score"]
-        description = result["document"]
+        title = result.title
+        score = result.score
+        description = result.document
 
         print(f"\n{i}. {title} (score: {score:.4f})")
         print(f"   {description}...")

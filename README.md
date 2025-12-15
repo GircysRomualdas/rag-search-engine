@@ -90,11 +90,11 @@ uv run cli/keyword_search_cli.py search "the hot shot"
 Output:
 ```
 Searching for: the hot shot
-1. Hot Potato
-2. Hot Shots! Part Deux
-3. Hotel Chevalier
-4. Hotel Berlin
-5. Killshot
+1. The Chronicles of Narnia: Prince Caspian
+2. 10
+3. Bombai Ka Babu
+4. Hot Potato
+5. Beerfest
 ```
 
 ---

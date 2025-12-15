@@ -12,6 +12,6 @@ def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> None:
     results = semantic_search.search(query, limit)
 
     for i, result in enumerate(results, 1):
-        print(f"{i}. {result['title']} (score: {result['score']:.4f})")
-        print(f"   {result['description'][:100]}...")
+        print(f"{i}. {result.title} (score: {result.score:.4f})")
+        print(f"   {result.description[:100]}...")
         print()
