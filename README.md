@@ -11,7 +11,8 @@ This is the starter code used in Boot.dev's [Learn Retrieval Augmented Generatio
 
 - Classic keyword search with TF, IDF, TF‑IDF, and BM25 scoring
 - Semantic search over movie descriptions using sentence embeddings
-- Simple fixed-size text chunking for long documents (RAG prep)
+- Chunked (sentence-based) semantic search for RAG-style retrieval
+- Hybrid search combining BM25 and semantic scores with a tunable α
 
 ---
 
@@ -442,10 +443,11 @@ Output:
 
 #### Hybrid search commands
 
-| Command                                  | Purpose                                                                |
-|------------------------------------------|------------------------------------------------------------------------|
-| `normalize <score1> <score2> ...`        | Normalize a list of numeric scores to the 0–1 range (min–max scaling). |
-| `weighted-search <query> [--alpha A] [--limit N]`                | Rank movies using a weighted combination of BM25 (keyword) and semantic scores. |
+| Command                                                     | Purpose                                                                                  |
+|-------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| `normalize <score1> <score2> ...`                           | Normalize a list of numeric scores to the 0–1 range (min–max scaling).                  |
+| `weighted-search <query> [--alpha A] [--limit N]`           | Rank movies using a weighted combination of BM25 (keyword) and semantic scores.         |
+| `rrf-search <query> [-k K] [--limit N]`                     | Rank movies using Reciprocal Rank Fusion over BM25 (keyword) and semantic search ranks. |
 
 ---
 
@@ -511,4 +513,51 @@ Output:
    Hybrid Score: 0.692
    BM25: 0.624, Semantic: 0.760
    Jonathan (11 years old) is playing hide in seek with his younger sister Sophie ( 6 years old ), Soph
+```
+
+---
+
+#### Reciprocal Rank Fusion (RRF) search command
+```bash
+uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N]
+```
+
+- `<query>`: the natural-language search query you want to run.
+- `-k K` (optional): RRF `k` parameter that controls how quickly scores decay with rank.
+  - smaller `K` → more weight on top-ranked results
+  - larger `K` → more influence from lower-ranked results
+  - defaults to `60`
+- `--limit N` (optional): maximum number of movies to return (defaults to `5`).
+
+##### Example
+```bash
+uv run cli/hybrid_search_cli.py rrf-search "family fighting movie" --limit 5
+```
+
+Output:
+```
+1. Anjali
+   RRF Score: 0.025
+   BM25 Rank: 27, Semantic Rank: 15
+   The film revolves around a family of four \u2013 a young civil engineer Shekar (Raghuvaran), his wif...
+
+2. The Spy Next Door
+   RRF Score: 0.023
+   BM25 Rank: 4, Semantic Rank: 69
+   The movie starts off with a montage of fights and stunts from Chan's older movies including The Tuxe...
+
+3. Kung Pow: Enter the Fist
+   RRF Score: 0.023
+   BM25 Rank: 5, Semantic Rank: 73
+   The movie is a parody of classic kung fu movies and features footage from the 1975 film Hu hao shuan...
+
+4. The Octagon
+   RRF Score: 0.022
+   BM25 Rank: 14, Semantic Rank: 53
+   A martial artist (Chuck Norris) must stop a group of terrorists trained in the ninja style by his ha...
+
+5. The Fighter
+   RRF Score: 0.022
+   BM25 Rank: 2, Semantic Rank: 108
+   As a welterweight from the wrong side of the tracks, Dickie Eklund is the pride of working class Low...
 ```

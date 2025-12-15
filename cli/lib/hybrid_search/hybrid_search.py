@@ -1,10 +1,16 @@
 import os
 
-from lib.utils.constants import CACHE_INDEX_PATH, DEFAULT_ALPHA, DEFAULT_SEARCH_LIMIT
+from lib.utils.constants import (
+    CACHE_INDEX_PATH,
+    DEFAULT_ALPHA,
+    DEFAULT_K,
+    DEFAULT_SEARCH_LIMIT,
+)
 from lib.utils.data_models import (
     Bm25Result,
     ChunkSearchResult,
-    HybridResult,
+    HybridRRFResult,
+    HybridWeightedResult,
     Movie,
     MovieId,
 )
@@ -33,7 +39,7 @@ class HybridSearch:
         query: str,
         alpha: float = DEFAULT_ALPHA,
         limit: int = DEFAULT_SEARCH_LIMIT,
-    ) -> list[HybridResult]:
+    ) -> list[HybridWeightedResult]:
         bm25_results: list[Bm25Result] = self._bm25_search(query, limit * 500)
         bm25_scores = [r.score for r in bm25_results]
         bm25_normalized = get_normalize_scores(bm25_scores)
@@ -44,7 +50,7 @@ class HybridSearch:
         chunk_scores = [r.score for r in chunk_results]
         chunk_normalized = get_normalize_scores(chunk_scores)
 
-        combined: dict[MovieId, HybridResult] = {}
+        combined: dict[MovieId, HybridWeightedResult] = {}
         movie_by_id: dict[MovieId, Movie] = {m.id: m for m in self.documents}
 
         for i, bm25_result in enumerate(bm25_results):
@@ -56,7 +62,7 @@ class HybridSearch:
 
             normalized_bm25 = bm25_normalized[i]
 
-            combined[doc_id] = HybridResult(
+            combined[doc_id] = HybridWeightedResult(
                 movie_id=doc_id,
                 title=movie.title,
                 document=movie.description[:100],
@@ -73,7 +79,7 @@ class HybridSearch:
                 movie = movie_by_id.get(doc_id)
                 if movie is None:
                     continue
-                combined[doc_id] = HybridResult(
+                combined[doc_id] = HybridWeightedResult(
                     movie_id=doc_id,
                     title=movie.title,
                     document=movie.description[:100],
@@ -91,8 +97,57 @@ class HybridSearch:
         weighted_results.sort(key=lambda r: r.score, reverse=True)
         return weighted_results[:limit]
 
-    def rrf_search(self, query, k, limit=10):
-        raise NotImplementedError("RRF hybrid search is not implemented yet.")
+    def rrf_search(
+        self, query: str, k: int = DEFAULT_K, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[HybridRRFResult]:
+        bm25_results: list[Bm25Result] = self._bm25_search(query, limit * 500)
+        chunk_results: list[ChunkSearchResult] = self.semantic_search.search_chunks(
+            query, limit * 500
+        )
+        combined: dict[MovieId, HybridRRFResult] = {}
+        movie_by_id: dict[MovieId, Movie] = {m.id: m for m in self.documents}
+
+        for i, bm25_result in enumerate(bm25_results):
+            rank = i + 1
+            score = rrf_score(rank, k)
+            doc_id_int = bm25_result.movie_id
+            doc_id = MovieId(doc_id_int)
+            movie = movie_by_id.get(doc_id)
+            if movie is None:
+                continue
+
+            combined[doc_id] = HybridRRFResult(
+                movie_id=doc_id,
+                title=movie.title,
+                document=movie.description[:100],
+                bm25_rank=rank,
+                semantic_rank=0,
+                rrf_score=score,
+            )
+
+        for i, result in enumerate(chunk_results):
+            doc_id = result.movie_id
+            rank = i + 1
+            score = rrf_score(rank, k)
+            if doc_id not in combined:
+                movie = movie_by_id.get(doc_id)
+                if movie is None:
+                    continue
+                combined[doc_id] = HybridRRFResult(
+                    movie_id=doc_id,
+                    title=movie.title,
+                    document=movie.description[:100],
+                    bm25_rank=0,
+                    semantic_rank=rank,
+                    rrf_score=score,
+                )
+            else:
+                combined[doc_id].rrf_score += score
+                combined[doc_id].semantic_rank = rank
+
+        rrf_results = list(combined.values())
+        rrf_results.sort(key=lambda r: r.rrf_score, reverse=True)
+        return rrf_results[:limit]
 
 
 def get_normalize_scores(scores: list[float]) -> list[float]:
@@ -110,3 +165,7 @@ def get_normalize_scores(scores: list[float]) -> list[float]:
         normalized_scores.append((s - min_score) / (max_score - min_score))
 
     return normalized_scores
+
+
+def rrf_score(rank: int, k: int = DEFAULT_K) -> float:
+    return 1 / (k + rank)

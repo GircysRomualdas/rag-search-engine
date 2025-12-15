@@ -53,10 +53,20 @@ class ChunkSearchResult:
 
 
 @dataclass
-class HybridResult:
+class HybridWeightedResult:
     movie_id: MovieId
     title: str
     document: str
     bm25_score: float
     semantic_score: float
     score: float
+
+
+@dataclass
+class HybridRRFResult:
+    movie_id: MovieId
+    title: str
+    document: str
+    bm25_rank: int
+    semantic_rank: int
+    rrf_score: float
