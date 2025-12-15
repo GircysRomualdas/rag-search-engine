@@ -437,3 +437,34 @@ Output:
 ```
 
 ---
+
+### Hybrid search
+
+#### Hybrid search commands
+
+| Command                                  | Purpose                                                                |
+|------------------------------------------|------------------------------------------------------------------------|
+| `normalize <score1> <score2> ...`        | Normalize a list of numeric scores to the 0–1 range (min–max scaling). |
+
+---
+
+#### Normalize command:
+```bash
+uv run cli/hybrid_search_cli.py normalize <score1> <score2> ...
+```
+
+- `<score1> <score2> ...`: one or more numeric scores (floats) to normalize.
+
+##### Example
+```bash
+uv run cli/hybrid_search_cli.py normalize 0.5 2.3 1.2 0.5 0.1
+```
+
+Output:
+```
+* 0.1818
+* 1.0000
+* 0.5000
+* 0.1818
+* 0.0000
+```
