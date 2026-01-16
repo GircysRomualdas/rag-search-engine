@@ -3,13 +3,18 @@ from lib.utils.constants import (
     DEFAULT_SEARCH_LIMIT,
 )
 from lib.utils.load import load_movies
-
 from ..hybrid_search import HybridSearch
+from ..query_enhancement import enhance_query
 
 
 def rrf_search_command(
-    query: str, k: int = DEFAULT_K, limit: int = DEFAULT_SEARCH_LIMIT
+    query: str, k: int = DEFAULT_K, limit: int = DEFAULT_SEARCH_LIMIT, enhance: str = None
 ) -> None:
+    if enhance:
+        enhanced_query = enhance_query(query, enhance)
+        print(f"Enhanced query ({enhance}): '{query}' -> '{enhanced_query}'\n")
+        query = enhanced_query
+
     documents = load_movies()
     hybrid_search = HybridSearch(documents)
     results = hybrid_search.rrf_search(query, k, limit)

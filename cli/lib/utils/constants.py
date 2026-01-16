@@ -11,6 +11,7 @@ DEFAULT_ALPHA = 0.5
 DEFAULT_K = 60
 
 DEFAULT_MODEL = "all-MiniLM-L6-v2"
+DEFAULT_GEMINI_MODEL = "gemini-2.0-flash-001"
 
 PROJECT_ROOT = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
