@@ -71,3 +71,8 @@ class HybridRRFResult:
     semantic_rank: int
     rrf_score: float
     rerank_score: float
+
+@dataclass
+class GoldenDataset:
+    query: str
+    relevant_docs: list[str]

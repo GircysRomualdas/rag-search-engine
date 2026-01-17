@@ -576,3 +576,75 @@ Reciprocal Rank Fusion Results for 'Corrected: "british bear' (k=60):
    BM25 Rank: 51, Semantic Rank: 27
    It is Christmas Eve in Bear Country and the Bear Family is decorating for Christmas. Now the only th...
 ```
+
+---
+
+### Evaluation
+
+#### Evaluation command
+
+```bash
+uv run cli/evaluation_cli.py --limit K
+```
+
+- `--limit K`: number of top results to evaluate (this is the K in Precision@K, default is 5).
+
+##### Example
+```bash
+uv run cli/evaluation_cli.py --limit 3
+```
+
+Output:
+```
+k=3
+
+- Query: cute british bear marmalade
+  - Precision@3: 0.3333
+  - Retrieved: Paddington, The Duchess, The Bear
+  - Relevant: Paddington
+
+- Query: talking teddy bear comedy
+  - Precision@3: 0.6667
+  - Retrieved: Ted, Ted 2, The Bear
+  - Relevant: Ted, Ted 2
+
+- Query: children's animated bear adventure
+  - Precision@3: 0.0000
+  - Retrieved: Alaska, The Bear, Paddington
+  - Relevant: Brother Bear, The Jungle Book, The Many Adventures of Winnie the Pooh, Yogi Bear, The Care Bears Movie, Care Bears Movie II: A New Generation, Care Bears Nutcracker Suite, The Little Polar Bear, The Little Polar Bear 2: The Mysterious Island, Open Season, The Country Bears, The Berenstain Bears' Christmas Tree, Winnie the Pooh
+
+- Query: friendship transformation magic with bears
+  - Precision@3: 0.3333
+  - Retrieved: The Care Bears Movie, The Bear, Care Bears Movie II: A New Generation
+  - Relevant: Brother Bear, The Care Bears Movie, The Jungle Book
+
+- Query: dinosaur park
+  - Precision@3: 0.3333
+  - Retrieved: Jurassic Park, Lost River, Carnosaur
+  - Relevant: Jurassic Park
+
+- Query: wizards and magic
+  - Precision@3: 0.6667
+  - Retrieved: Troll, Harry Potter and the Sorcerer's Stone, Harry Potter and the Prisoner of Azkaban
+  - Relevant: Harry Potter and the Sorcerer's Stone, Harry Potter and the Prisoner of Azkaban, Harry Potter and the Goblet of Fire, Harry Potter and the Order of the Phoenix, Harry Potter and the Deathly Hallows: Part 1, Harry Potter and the Deathly Hallows: Part 2, The Sword in the Stone, Oz the Great and Powerful, The Lord of the Rings: The Fellowship of the Ring
+
+- Query: superhero saves the world
+  - Precision@3: 1.0000
+  - Retrieved: Kick-Ass, Justice League: The Flashpoint Paradox, Superman/Batman: Public Enemies
+  - Relevant: The Incredibles, Superman II, Superman/Batman: Public Enemies, Justice League: The Flashpoint Paradox, Up, Up, and Away!, Megamind, Kick-Ass, Sky High
+
+- Query: zombie apocalypse
+  - Precision@3: 0.3333
+  - Retrieved: Le notti del terrore, The City of the Dead, Dance of the Dead
+  - Relevant: Shaun of the Dead, Dance of the Dead, The Return of the Living Dead, Pride and Prejudice and Zombies, I Am Legend, Resident Evil: Apocalypse, Colin, Død snø
+
+- Query: car racing
+  - Precision@3: 0.6667
+  - Retrieved: Rush, Hot Wheels Highway 35 World Race, The Fast and the Furious
+  - Relevant: The Fast and the Furious, Rush, Need for Speed, Talladega Nights: The Ballad of Ricky Bobby, The Love Bug, Cars, Furious Seven
+
+- Query: romantic comedy wedding
+  - Precision@3: 0.3333
+  - Retrieved: They Won't Believe Me, L'amant, 27 Dresses
+  - Relevant: Runaway Bride, 27 Dresses, Just Go with It, The Wedding Planner, Wedding Crashers, The Accidental Husband, You, Me and Dupree
+```

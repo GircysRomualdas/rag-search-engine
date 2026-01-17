@@ -19,6 +19,7 @@ PROJECT_ROOT = os.path.dirname(
 
 MOVIES_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "movies.json")
 STOP_WORDS_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "stopwords.txt")
+GOLDEN_DATASET_PATH = os.path.join(PROJECT_ROOT, "data", "golden_dataset.json")
 
 CACHE_DIR = os.path.join(PROJECT_ROOT, "cache")
 os.makedirs(CACHE_DIR, exist_ok=True)

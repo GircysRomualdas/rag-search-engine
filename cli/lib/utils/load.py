@@ -10,8 +10,9 @@ from .constants import (
     CHCHE_CHUNK_METADATA_PATH,
     MOVIES_DATA_PATH,
     STOP_WORDS_DATA_PATH,
+    GOLDEN_DATASET_PATH,
 )
-from .data_models import ChunkMetadata, Movie, MovieId, Token, TokenCount
+from .data_models import ChunkMetadata, Movie, MovieId, Token, TokenCount, GoldenDataset
 
 
 def load_cache_index() -> dict[Token, set[MovieId]]:
@@ -57,6 +58,15 @@ def load_chunk_metadata() -> list[ChunkMetadata]:
         for c in data["chunks"]
     ]
 
+def load_golden_dataset() -> list[GoldenDataset]:
+    data = load_json(GOLDEN_DATASET_PATH)
+    return [
+        GoldenDataset(
+            query=c["query"],
+            relevant_docs=c["relevant_docs"],
+        )
+        for c in data["test_cases"]
+    ]
 
 def load_json(path: str) -> dict:
     with open(path, "r") as f:
