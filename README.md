@@ -531,6 +531,7 @@ uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance
 - `--enhance METHOD` (optional): apply a query enhancement method before running RRF search.
   - `spell`: fix obvious spelling mistakes in the query via an LLM, preserving correctly spelled words.
   - `rewrite`: rewrite the query to be more specific and searchable.
+  - `expand`: expand the query with related terms and synonyms to improve search coverage.
 
 ##### Example
 ```bash
