@@ -156,6 +156,7 @@ def rerank_results(query: str, k: int, limit: int, method: str = None) -> list[H
         case _:
             return hybrid_search.rrf_search(query, k, limit)
 
+
 def enhance_query(query: str, method: str = None) -> str:
     match method:
         case "spell":

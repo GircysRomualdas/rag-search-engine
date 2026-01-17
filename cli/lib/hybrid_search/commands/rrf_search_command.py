@@ -12,6 +12,7 @@ def rrf_search_command(
     enhance: str = None,
     rerank_method: str = None,
 ) -> None:
+    print(f"original query: {query}")
     if enhance:
         enhanced_query = enhance_query(query, enhance)
         print(f"Enhanced query ({enhance}): '{query}' -> '{enhanced_query}'\n")
