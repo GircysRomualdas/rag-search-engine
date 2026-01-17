@@ -26,9 +26,12 @@ def evaluation_command(limit: int) -> None:
 
         total_retrieved = len(retrieved_titles)
         precision = relevant_retrieved / total_retrieved if total_retrieved > 0 else 0.0
+        total_relevant = len(relevant_set)
+        recall = relevant_retrieved / total_relevant if total_relevant > 0 else 0.0
 
         print(f"- Query: {golden.query}")
-        print(f"  - Precision@{limit}: {precision:.4f}")
-        print(f"  - Retrieved: {', '.join(retrieved_titles)}")
-        print(f"  - Relevant: {', '.join(golden.relevant_docs)}")
+        print(f"    - Precision@{limit}: {precision:.4f}")
+        print(f"    - Recall@{limit}: {recall:.4f}")
+        print(f"    - Retrieved: {', '.join(retrieved_titles)}")
+        print(f"    - Relevant: {', '.join(golden.relevant_docs)}")
         print()
