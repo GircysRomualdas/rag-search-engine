@@ -107,10 +107,10 @@ def batch(results: list[HybridRRFResult], query: str) -> list[HybridRRFResult]:
     [75, 12, 34, 2, 1]
     """
 
+    ordered_results = []
     try:
         prompt_result = json.loads(prompt_model(prompt))
         id_to_result = {int(r.movie_id): r for r in results}
-        ordered_results = []
         for movie_id in prompt_result:
             movie_id_int = int(movie_id)
             if movie_id_int in id_to_result:
@@ -135,6 +135,35 @@ def cross_encoder(results: list[HybridRRFResult], query: str) -> list[HybridRRFR
 
     return results
 
+def evaluated_results(results: list[HybridRRFResult], query: str) -> list[tuple[int, HybridRRFResult]]:
+    prompt = f"""Rate how relevant each result is to this query on a 0-3 scale:
+
+    Query: "{query}"
+
+    Results:
+    {get_rrf_doc_list(results)}
+
+    Scale:
+    - 3: Highly relevant
+    - 2: Relevant
+    - 1: Marginally relevant
+    - 0: Not relevant
+
+    Do NOT give any numbers out than 0, 1, 2, or 3.
+
+    Return ONLY the scores in the same order you were given the documents. Return a valid JSON list, nothing else. For example:
+
+    [2, 0, 3, 2, 0, 1]"""
+
+    ordered_results: list[tuple[int, HybridRRFResult]] = []
+    try:
+        prompt_result = json.loads(prompt_model(prompt))
+        for i, score in enumerate(prompt_result):
+            ordered_results.append((score, results[i]))
+    except:
+        ordered_results = [(0, r) for r in results]
+    return ordered_results
+
 def prompt_model(prompt: str) -> str | None:
     response = client.models.generate_content(model=model, contents=prompt)
     corrected = (response.text or "").strip().strip('"')
@@ -155,7 +184,6 @@ def rerank_results(query: str, k: int, limit: int, method: str = None) -> list[H
             return results[:limit]
         case _:
             return hybrid_search.rrf_search(query, k, limit)
-
 
 def enhance_query(query: str, method: str = None) -> str:
     match method:

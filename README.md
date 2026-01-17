@@ -447,7 +447,7 @@ Output:
 |-------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | `normalize <score1> <score2> ...`                           | Normalize a list of numeric scores to the 0–1 range (min–max scaling).                  |
 | `weighted-search <query> [--alpha A] [--limit N]`           | Rank movies using a weighted combination of BM25 (keyword) and semantic scores.         |
-| `rrf-search <query> [-k K] [--limit N] [--enhance METHOD] [--rerank-method METHOD]` | Rank movies using Reciprocal Rank Fusion, optionally enhancing the query or reranking the results. |
+| `rrf-search <query> [-k K] [--limit N] [--enhance METHOD] [--rerank-method METHOD] [--evaluate]` | Rank movies using Reciprocal Rank Fusion, optionally enhancing the query, reranking the results, or evaluating them with an LLM judge. |
 
 ---
 
@@ -519,7 +519,7 @@ Output:
 
 #### Reciprocal Rank Fusion (RRF) search command
 ```bash
-uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance METHOD] [--rerank-method METHOD]
+uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance METHOD] [--rerank-method METHOD] [--evaluate]
 ```
 
 - `<query>`: the natural-language search query you want to run.
@@ -536,6 +536,7 @@ uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance
   - `individual`: reranks results by sending individual documents to an LLM for scoring.
   - `batch`: reranks results by sending a batch of top RRF results to an LLM, which returns the best order of document IDs.
   - `cross_encoder`: reranks results using a pre-trained cross-encoder model to compute a relevance score for each query-document pair.
+- `--evaluate` (optional): after running RRF (and any reranking), use an LLM judge to score.
 
 ##### Example
 ```bash
