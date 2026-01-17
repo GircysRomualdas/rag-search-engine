@@ -123,6 +123,7 @@ class HybridSearch:
                 bm25_rank=rank,
                 semantic_rank=0,
                 rrf_score=score,
+                rerank_score=0,
             )
 
         for i, result in enumerate(chunk_results):
@@ -140,6 +141,7 @@ class HybridSearch:
                     bm25_rank=0,
                     semantic_rank=rank,
                     rrf_score=score,
+                    rerank_score=0,
                 )
             else:
                 combined[doc_id].rrf_score += score

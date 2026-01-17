@@ -70,3 +70,4 @@ class HybridRRFResult:
     bm25_rank: int
     semantic_rank: int
     rrf_score: float
+    rerank_score: float

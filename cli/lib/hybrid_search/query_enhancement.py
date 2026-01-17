@@ -2,6 +2,10 @@ import os
 from dotenv import load_dotenv
 from google import genai
 from lib.utils.constants import DEFAULT_GEMINI_MODEL
+from .hybrid_search import HybridSearch
+from lib.utils.load import load_movies
+from lib.utils.data_models import HybridRRFResult
+import time
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -18,7 +22,8 @@ def spell_correct(query: str) -> str:
     If no errors, return the original query.
     Corrected:"""
 
-    return prompt_model(prompt)
+    result = prompt_model(prompt)
+    return result if result else query
 
 def rewrite_query(query: str) -> str:
     prompt = f"""Rewrite this movie search query to be more specific and searchable.
@@ -40,7 +45,8 @@ def rewrite_query(query: str) -> str:
 
     Rewritten query:"""
 
-    return prompt_model(prompt)
+    result = prompt_model(prompt)
+    return result if result else query
 
 def expand_query(query: str) -> str:
     prompt = f"""Expand this movie search query with related terms.
@@ -58,12 +64,47 @@ def expand_query(query: str) -> str:
     Query: "{query}"
     """
 
-    return prompt_model(prompt)
+    result = prompt_model(prompt)
+    return result if result else query
 
-def prompt_model(prompt: str) -> str:
+def individual(results: list[HybridRRFResult], query: str) -> list[HybridRRFResult]:
+    for result in results:
+        prompt = f"""Rate how well this movie matches the search query.
+
+        Query: "{query}"
+        Movie: {result.title} - {result.document}
+
+        Consider:
+        - Direct relevance to query
+        - User intent (what they're looking for)
+        - Content appropriateness
+
+        Rate 0-10 (10 = perfect match).
+        Give me ONLY the number in your response, no other text or explanation.
+
+        Score:"""
+
+        prompt_result = prompt_model(prompt)
+        result.rerank_score = float(prompt_result) if prompt_result else 0.0
+        time.sleep(4)
+
+    results.sort(key=lambda r: r.rerank_score, reverse=True)
+    return results
+
+def prompt_model(prompt: str) -> str | None:
     response = client.models.generate_content(model=model, contents=prompt)
     corrected = (response.text or "").strip().strip('"')
-    return corrected if corrected else query
+    return corrected
+
+def rerank_results(query: str, k: int, limit: int, method: str = None) -> list[HybridRRFResult]:
+    documents = load_movies()
+    hybrid_search = HybridSearch(documents)
+    match method:
+        case "individual":
+            results = individual(hybrid_search.rrf_search(query, k, limit * 5), query)
+            return results[:limit]
+        case _:
+            return hybrid_search.rrf_search(query, k, limit)
 
 def enhance_query(query: str, method: str = None) -> str:
     match method:

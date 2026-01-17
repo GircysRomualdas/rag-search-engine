@@ -447,7 +447,7 @@ Output:
 |-------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | `normalize <score1> <score2> ...`                           | Normalize a list of numeric scores to the 0–1 range (min–max scaling).                  |
 | `weighted-search <query> [--alpha A] [--limit N]`           | Rank movies using a weighted combination of BM25 (keyword) and semantic scores.         |
-| `rrf-search <query> [-k K] [--limit N] [--enhance METHOD]`       | Rank movies using Reciprocal Rank Fusion, optionally enhancing the query first.         |
+| `rrf-search <query> [-k K] [--limit N] [--enhance METHOD] [--rerank-method METHOD]` | Rank movies using Reciprocal Rank Fusion, optionally enhancing the query or reranking the results. |
 
 ---
 
@@ -519,7 +519,7 @@ Output:
 
 #### Reciprocal Rank Fusion (RRF) search command
 ```bash
-uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance METHOD]
+uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance METHOD] [--rerank-method METHOD]
 ```
 
 - `<query>`: the natural-language search query you want to run.
@@ -532,38 +532,45 @@ uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance
   - `spell`: fix obvious spelling mistakes in the query via an LLM, preserving correctly spelled words.
   - `rewrite`: rewrite the query to be more specific and searchable.
   - `expand`: expand the query with related terms and synonyms to improve search coverage.
+- `--rerank-method METHOD` (optional): apply a reranking method to the results. 
+  - `individual`: reranks results by sending individual documents to an LLM for scoring.
 
 ##### Example
 ```bash
-uv run cli/hybrid_search_cli.py rrf-search "briish bear" --limit 5 --enhance spell
+uv run cli/hybrid_search_cli.py rrf-search "briish bear" --limit 5 --enhance spell --rerank-method individual
 ```
 
 Output:
 ```
 Enhanced query (spell): 'briish bear' -> 'Corrected: "british bear'
 
+Reranking top 5 results using individual method...
+
+Reciprocal Rank Fusion Results for 'Corrected: "british bear' (k=60):
+
 1. Paddington
+   Rerank Score: 7.000/10
    RRF Score: 0.032
    BM25 Rank: 3, Semantic Rank: 2
    Deep in the rainforests of Peru, a young bear lives peacefully with his Aunt Lucy and Uncle Pastuzo,...
-
-2. The Great Bear
-   RRF Score: 0.028
-   BM25 Rank: 20, Semantic Rank: 3
-   Jonathan (11 years old) is playing hide in seek with his younger sister Sophie ( 6 years old ), Soph...
-
-3. The Country Bears
+2. The Country Bears
+   Rerank Score: 2.000/10
    RRF Score: 0.026
    BM25 Rank: 30, Semantic Rank: 7
    Beary Barrington is a young bear who has been raised by a human family and struggles with his identi...
-
-4. The Bear
-   RRF Score: 0.025
-   BM25 Rank: 24, Semantic Rank: 16
-   Tilly is a young girl who treasures her beloved teddy bear above all other possessions, carrying it ...
-
-5. Bear
-   RRF Score: 0.025
-   BM25 Rank: 28, Semantic Rank: 15
-   Businessman Sam, his wife Liz and his musician brother Nick with his girlfriend Christine are drivin...
+3. An Unfinished Life
+   Rerank Score: 2.000/10
+   RRF Score: 0.024
+   BM25 Rank: 46, Semantic Rank: 9
+   One year ago, a wild bear stole a calf from Mitch (Morgan Freeman) and Einar\u2019s (Robert Redford)...
+4. Zulu Dawn
+   Rerank Score: 2.000/10
+   RRF Score: 0.021
+   BM25 Rank: 7, Semantic Rank: 102
+   The film is set in British South Africa, in the province of Natal, in January 1879. The first half o...
+5. The Berenstain Bears' Christmas Tree
+   Rerank Score: 2.000/10
+   RRF Score: 0.021
+   BM25 Rank: 51, Semantic Rank: 27
+   It is Christmas Eve in Bear Country and the Bear Family is decorating for Christmas. Now the only th...
 ```
