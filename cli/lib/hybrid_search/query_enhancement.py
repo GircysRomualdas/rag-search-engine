@@ -8,6 +8,7 @@ from lib.utils.data_models import HybridRRFResult
 from lib.utils.utils import get_rrf_doc_list
 import time
 import json
+from sentence_transformers import CrossEncoder
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -119,6 +120,20 @@ def batch(results: list[HybridRRFResult], query: str) -> list[HybridRRFResult]:
 
     return ordered_results
 
+def cross_encoder(results: list[HybridRRFResult], query: str) -> list[HybridRRFResult]:
+    pairs = []
+    for r in results:
+        pairs.append([query, f"{r.title} - {r.document}"])
+
+    cross_encoder = CrossEncoder("cross-encoder/ms-marco-TinyBERT-L2-v2")
+    scores = cross_encoder.predict(pairs)
+
+    for r, score in zip(results, scores):
+        r.rerank_score = float(score)
+
+    results.sort(key=lambda x: x.rerank_score, reverse=True)
+
+    return results
 
 def prompt_model(prompt: str) -> str | None:
     response = client.models.generate_content(model=model, contents=prompt)
@@ -134,6 +149,9 @@ def rerank_results(query: str, k: int, limit: int, method: str = None) -> list[H
             return results[:limit]
         case "batch":
             results = batch(hybrid_search.rrf_search(query, k, limit * 5), query)
+            return results[:limit]
+        case "cross_encoder":
+            results = cross_encoder(hybrid_search.rrf_search(query, k, limit * 5), query)
             return results[:limit]
         case _:
             return hybrid_search.rrf_search(query, k, limit)

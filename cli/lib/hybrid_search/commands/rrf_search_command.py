@@ -36,6 +36,8 @@ def rrf_search_command(
             print(f"   Rerank Score: {result.rerank_score:.3f}/10")
         elif rerank_method == "batch":
             print(f"   Rerank Rank: {i}")
+        elif rerank_method == "cross_encoder":
+            print(f"   Cross Encoder Score: {result.rerank_score}")
         print(f"   RRF Score: {rrf_score:.3f}")
         print(f"   BM25 Rank: {bm25_rank}, Semantic Rank: {semantic_rank}")
         print(f"   {doc[:100]}...")
