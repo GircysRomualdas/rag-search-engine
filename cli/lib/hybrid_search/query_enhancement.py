@@ -5,7 +5,9 @@ from lib.utils.constants import DEFAULT_GEMINI_MODEL
 from .hybrid_search import HybridSearch
 from lib.utils.load import load_movies
 from lib.utils.data_models import HybridRRFResult
+from lib.utils.utils import get_rrf_doc_list
 import time
+import json
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -91,6 +93,33 @@ def individual(results: list[HybridRRFResult], query: str) -> list[HybridRRFResu
     results.sort(key=lambda r: r.rerank_score, reverse=True)
     return results
 
+def batch(results: list[HybridRRFResult], query: str) -> list[HybridRRFResult]:
+    prompt = f"""Rank these movies by relevance to the search query.
+
+    Query: "{query}"
+
+    Movies:
+    {get_rrf_doc_list(results)}
+
+    Return ONLY the IDs in order of relevance (best match first). Return a valid JSON list, nothing else. For example:
+
+    [75, 12, 34, 2, 1]
+    """
+
+    try:
+        prompt_result = json.loads(prompt_model(prompt))
+        id_to_result = {int(r.movie_id): r for r in results}
+        ordered_results = []
+        for movie_id in prompt_result:
+            movie_id_int = int(movie_id)
+            if movie_id_int in id_to_result:
+                ordered_results.append(id_to_result[movie_id_int])
+    except:
+        ordered_results = results
+
+    return ordered_results
+
+
 def prompt_model(prompt: str) -> str | None:
     response = client.models.generate_content(model=model, contents=prompt)
     corrected = (response.text or "").strip().strip('"')
@@ -102,6 +131,9 @@ def rerank_results(query: str, k: int, limit: int, method: str = None) -> list[H
     match method:
         case "individual":
             results = individual(hybrid_search.rrf_search(query, k, limit * 5), query)
+            return results[:limit]
+        case "batch":
+            results = batch(hybrid_search.rrf_search(query, k, limit * 5), query)
             return results[:limit]
         case _:
             return hybrid_search.rrf_search(query, k, limit)

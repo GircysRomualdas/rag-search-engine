@@ -4,6 +4,7 @@ from nltk.stem import PorterStemmer
 
 from .data_models import Token
 from .load import load_stop_words
+from .data_models import HybridRRFResult
 
 
 def tokenize_text(text: str) -> list[Token]:
@@ -28,3 +29,12 @@ def remove_stop_words(words: list[str]) -> list[str]:
 def get_stems(words: list[str]) -> list[Token]:
     stemmer = PorterStemmer()
     return [stemmer.stem(Token(word)) for word in words]
+
+def get_rrf_doc_list(rrf_results: list[HybridRRFResult]) -> str:
+    doc_lines = []
+    for r in rrf_results:
+        line = f"ID: {r.movie_id}, Title: {r.title}, Description: {r.document}"
+        doc_lines.append(line)
+
+    doc_list_str = "\n".join(doc_lines)
+    return doc_list_str

@@ -19,8 +19,8 @@ def rrf_search_command(
 
     results = rerank_results(query, k, limit, rerank_method)
 
-    if rerank_method == "individual":
-        print(f"Reranking top {limit} results using individual method...\n")
+    if rerank_method:
+        print(f"Reranking top {limit} results using {rerank_method} method...\n")
 
     print(f"Reciprocal Rank Fusion Results for '{query}' (k={k}):\n")
 
@@ -34,6 +34,8 @@ def rrf_search_command(
         print(f"{i}. {title}")
         if rerank_method == "individual":
             print(f"   Rerank Score: {result.rerank_score:.3f}/10")
+        elif rerank_method == "batch":
+            print(f"   Rerank Rank: {i}")
         print(f"   RRF Score: {rrf_score:.3f}")
         print(f"   BM25 Rank: {bm25_rank}, Semantic Rank: {semantic_rank}")
         print(f"   {doc[:100]}...")

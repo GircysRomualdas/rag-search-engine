@@ -534,6 +534,7 @@ uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance
   - `expand`: expand the query with related terms and synonyms to improve search coverage.
 - `--rerank-method METHOD` (optional): apply a reranking method to the results. 
   - `individual`: reranks results by sending individual documents to an LLM for scoring.
+  - `batch`: reranks results by sending a batch of top RRF results to an LLM, which returns the best order of document IDs.
 
 ##### Example
 ```bash
