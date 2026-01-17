@@ -447,7 +447,7 @@ Output:
 |-------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | `normalize <score1> <score2> ...`                           | Normalize a list of numeric scores to the 0–1 range (min–max scaling).                  |
 | `weighted-search <query> [--alpha A] [--limit N]`           | Rank movies using a weighted combination of BM25 (keyword) and semantic scores.         |
-| `rrf-search <query> [-k K] [--limit N]`                     | Rank movies using Reciprocal Rank Fusion over BM25 (keyword) and semantic search ranks. |
+| `rrf-search <query> [-k K] [--limit N] [--enhance METHOD]`       | Rank movies using Reciprocal Rank Fusion, optionally enhancing the query first.         |
 
 ---
 
@@ -519,45 +519,49 @@ Output:
 
 #### Reciprocal Rank Fusion (RRF) search command
 ```bash
-uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N]
+uv run cli/hybrid_search_cli.py rrf-search <query> [-k K] [--limit N] [--enhance METHOD]
 ```
 
 - `<query>`: the natural-language search query you want to run.
-- `-k K` (optional): RRF `k` parameter that controls how quickly scores decay with rank.
-  - smaller `K` → more weight on top-ranked results
-  - larger `K` → more influence from lower-ranked results
+- `-k K` (optional): RRF `k` parameter that controls how quickly the reciprocal scores decay with rank.
+  - smaller `K` means a steeper decay and more weight on top-ranked results
+  - larger `K` means a flatter decay and more influence from lower-ranked results
   - defaults to `60`
 - `--limit N` (optional): maximum number of movies to return (defaults to `5`).
+- `--enhance METHOD` (optional): apply a query enhancement method before running RRF search.
+  - `spell`: fix obvious spelling mistakes in the query via an LLM, preserving correctly spelled words.
 
 ##### Example
 ```bash
-uv run cli/hybrid_search_cli.py rrf-search "family fighting movie" --limit 5
+uv run cli/hybrid_search_cli.py rrf-search "briish bear" --limit 5 --enhance spell
 ```
 
 Output:
 ```
-1. Anjali
+Enhanced query (spell): 'briish bear' -> 'Corrected: "british bear'
+
+1. Paddington
+   RRF Score: 0.032
+   BM25 Rank: 3, Semantic Rank: 2
+   Deep in the rainforests of Peru, a young bear lives peacefully with his Aunt Lucy and Uncle Pastuzo,...
+
+2. The Great Bear
+   RRF Score: 0.028
+   BM25 Rank: 20, Semantic Rank: 3
+   Jonathan (11 years old) is playing hide in seek with his younger sister Sophie ( 6 years old ), Soph...
+
+3. The Country Bears
+   RRF Score: 0.026
+   BM25 Rank: 30, Semantic Rank: 7
+   Beary Barrington is a young bear who has been raised by a human family and struggles with his identi...
+
+4. The Bear
    RRF Score: 0.025
-   BM25 Rank: 27, Semantic Rank: 15
-   The film revolves around a family of four \u2013 a young civil engineer Shekar (Raghuvaran), his wif...
+   BM25 Rank: 24, Semantic Rank: 16
+   Tilly is a young girl who treasures her beloved teddy bear above all other possessions, carrying it ...
 
-2. The Spy Next Door
-   RRF Score: 0.023
-   BM25 Rank: 4, Semantic Rank: 69
-   The movie starts off with a montage of fights and stunts from Chan's older movies including The Tuxe...
-
-3. Kung Pow: Enter the Fist
-   RRF Score: 0.023
-   BM25 Rank: 5, Semantic Rank: 73
-   The movie is a parody of classic kung fu movies and features footage from the 1975 film Hu hao shuan...
-
-4. The Octagon
-   RRF Score: 0.022
-   BM25 Rank: 14, Semantic Rank: 53
-   A martial artist (Chuck Norris) must stop a group of terrorists trained in the ninja style by his ha...
-
-5. The Fighter
-   RRF Score: 0.022
-   BM25 Rank: 2, Semantic Rank: 108
-   As a welterweight from the wrong side of the tracks, Dickie Eklund is the pride of working class Low...
+5. Bear
+   RRF Score: 0.025
+   BM25 Rank: 28, Semantic Rank: 15
+   Businessman Sam, his wife Liz and his musician brother Nick with his girlfriend Christine are drivin...
 ```
