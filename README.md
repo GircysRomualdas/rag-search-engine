@@ -681,6 +681,7 @@ k=3
 | `rag "<query>"`                                                   | Run Retrieval-Augmented Generation: search movies, then have an LLM answer based on the results |
 | `summarize "<query>" [--limit N]`                                 | Summarize multiple movie search results into a concise, info-dense overview                     |
 | `citations "<query>" [--limit N]`                                        | Answer a query using search results and include inline citations.          |
+| `question "<question>" [--limit N]`                               | Conversational Q&A about movies using RAG over dataset                               |
 
 ---
 
@@ -770,4 +771,33 @@ Search Results:
 
 LLM Answer:
 Based on the Hoopla movie descriptions, "Eliminators" features a time-traveling mad scientist who creates a cyborg with a laser on its arm [1]. This sounds like it could fit your request for an action movie with lasers.
+```
+
+---
+
+#### Question command
+
+```bash
+uv run cli/augmented_generation_cli.py question "<question>" [--limit N]
+```
+
+- `<question>`: the natural-language question you want to ask about movies.
+- `--limit N` (optional): number of search results to use (defaults to 5).
+
+##### Example
+```bash
+uv run cli/augmented_generation_cli.py question 'Who are the main characters in Jurassic Park?'
+```
+
+Output:
+```
+Search Results:
+     -Jurassic Park
+     -Mike and Dave Need Wedding Dates
+     -House II: The Second Story
+     -The Last of the Finest
+     -Tokyo Babiron
+
+Answer: 
+Okay, so Jurassic Park on Hoopla is about John Hammond, an industrialist, and his bioengineering company, InGen. They created a theme park. Some of the main characters are probably also Alan Grant, Ellie Sattler, and Ian Malcolm.
 ```

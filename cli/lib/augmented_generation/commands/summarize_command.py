@@ -9,7 +9,7 @@ def summarize_command(query: str, limit: int) -> None:
     hybrid_search = HybridSearch(documents)
     results = hybrid_search.rrf_search(query, k=DEFAULT_K, limit=5)
 
-    prompt_result = augmented_prompt(results, query)
+    prompt_result = summarize_prompt(results, query)
 
     print("Search Results:")
     for result in results:
@@ -19,7 +19,7 @@ def summarize_command(query: str, limit: int) -> None:
     print(prompt_result)
 
 
-def augmented_prompt(results: list[HybridRRFResult], query: str) -> str:
+def summarize_prompt(results: list[HybridRRFResult], query: str) -> str:
     prompt = f"""
     Provide information useful to this query by synthesizing information from multiple search results in detail.
     The goal is to provide comprehensive information so that users know what their options are.

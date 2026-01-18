@@ -2,6 +2,7 @@ import argparse
 from lib.augmented_generation.commands.rag_command import rag_command
 from lib.augmented_generation.commands.summarize_command import summarize_command
 from lib.augmented_generation.commands.citations_command import citations_command
+from lib.augmented_generation.commands.question_command import question_command
 
 def main():
     parser = argparse.ArgumentParser(description="Retrieval Augmented Generation CLI")
@@ -34,6 +35,18 @@ def main():
         help="Maximum number of citations to return (default: 5)",
     )
 
+    question_parser = subparsers.add_parser(
+        "question", help="Ask a question and return answers"
+    )
+    question_parser.add_argument(
+        "question", type=str, help="Question to ask"
+    )
+    question_parser.add_argument(
+        "--limit",
+        type=int,
+        default=5,
+        help="Maximum number of results to use (default: 5)",
+    )
 
     args = parser.parse_args()
 
@@ -44,6 +57,8 @@ def main():
             summarize_command(args.query, args.limit)
         case "citations":
             citations_command(args.query, args.limit)
+        case "question":
+            question_command(args.question, args.limit)
         case _:
             parser.print_help()
 
