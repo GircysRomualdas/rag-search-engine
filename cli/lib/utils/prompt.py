@@ -9,10 +9,13 @@ api_key = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 model = DEFAULT_GEMINI_MODEL
 
-def prompt_model(prompt: str) -> str | None:
+def prompt_model(prompt: str) -> str:
     response = client.models.generate_content(model=model, contents=prompt)
     corrected = (response.text or "").strip().strip('"')
     return corrected
+
+def prompt_model_parts(parts: list[any]):
+    return client.models.generate_content(model=model, contents=parts)
 
 def get_rrf_doc_list(rrf_results: list[HybridRRFResult]) -> str:
     doc_lines = []

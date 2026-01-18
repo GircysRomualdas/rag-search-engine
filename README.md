@@ -801,3 +801,33 @@ Search Results:
 Answer: 
 Okay, so Jurassic Park on Hoopla is about John Hammond, an industrialist, and his bioengineering company, InGen. They created a theme park. Some of the main characters are probably also Alan Grant, Ellie Sattler, and Ian Malcolm.
 ```
+
+++++++++
+
+
+---
+
+### Describe image
+
+#### Describe image command
+
+```bash
+uv run cli/describe_image_cli.py --image PATH --query TEXT
+```
+
+- `--image PATH`: path to the image file.
+- `--query TEXT`: original text query to be rewritten based on the image.
+
+
+##### Example
+```bash
+uv run cli/describe_image_cli.py --image data/paddington.jpeg --query 'bear in London'
+```
+
+Output:
+```
+Rewritten query: "Paddington" movie Michael Bond marmalade London blue duffle coat red hat
+Total tokens:    343
+```
+
+---
