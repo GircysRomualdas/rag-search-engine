@@ -1,19 +1,11 @@
-import os
-from dotenv import load_dotenv
-from google import genai
-from lib.utils.constants import DEFAULT_GEMINI_MODEL
 from .hybrid_search import HybridSearch
 from lib.utils.load import load_movies
 from lib.utils.data_models import HybridRRFResult
-from lib.utils.utils import get_rrf_doc_list
+from lib.utils.prompt import get_rrf_doc_list, prompt_model
 import time
 import json
 from sentence_transformers import CrossEncoder
 
-load_dotenv()
-api_key = os.environ.get("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
-model = DEFAULT_GEMINI_MODEL
 
 def spell_correct(query: str) -> str:
     prompt = f"""Fix any spelling errors in this movie search query.
@@ -163,11 +155,6 @@ def evaluated_results(results: list[HybridRRFResult], query: str) -> list[tuple[
     except:
         ordered_results = [(0, r) for r in results]
     return ordered_results
-
-def prompt_model(prompt: str) -> str | None:
-    response = client.models.generate_content(model=model, contents=prompt)
-    corrected = (response.text or "").strip().strip('"')
-    return corrected
 
 def rerank_results(query: str, k: int, limit: int, method: str = None) -> list[HybridRRFResult]:
     documents = load_movies()

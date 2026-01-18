@@ -669,3 +669,45 @@ k=3
     - Retrieved: They Won't Believe Me, L'amant, 27 Dresses
     - Relevant: Runaway Bride, 27 Dresses, Just Go with It, The Wedding Planner, Wedding Crashers, The Accidental Husband, You, Me and Dupree
 ```
+
+---
+
+### Augmented Generation
+
+#### Augmented generation commands
+
+| Command                                                           | Purpose                                                                                          |
+|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| `rag "<query>"`                                                   | Run Retrieval-Augmented Generation: search movies, then have an LLM answer based on the results |
+
+---
+
+#### RAG command
+
+```bash
+uv run cli/augmented_generation_cli.py rag "<query>"
+```
+
+- `<query>`: the natural-language search query you want to run.
+
+##### Example
+```bash
+uv run cli/augmented_generation_cli.py rag 'movies about action and dinosaurs'
+```
+
+Output:
+```
+Search Results:
+     -A Sound of Thunder
+     -A Claymation Christmas Celebration
+     -The Good Dinosaur
+     -The Crater Lake Monster
+     -Jurassic Park
+
+RAG Response:
+Okay, based on what's available on Hoopla right now, here are the action and dinosaur movies you might enjoy:
+
+*   **Jurassic Park:** This classic movie is about a theme park populated with dinosaurs brought to life through bioengineering.
+*   **A Sound of Thunder:** This movie is about a company that allows people to hunt dinosaurs in the past.
+*   **The Good Dinosaur:** This movie is about a dinosaur who lives 65 million years ago.
+```
