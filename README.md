@@ -7,18 +7,10 @@ This is the starter code used in Boot.dev's [Learn Retrieval Augmented Generatio
 
 ---
 
-## Features
-
-- Classic keyword search with TF, IDF, TF‑IDF, and BM25 scoring
-- Semantic search over movie descriptions using sentence embeddings
-- Chunked (sentence-based) semantic search for RAG-style retrieval
-- Hybrid search combining BM25 and semantic scores with a tunable α
-
----
-
 ## Requirements
 - Python 3.12+
 - uv (if not installed: `pip install uv`)
+- Gemini API key (from [Google AI Studio](https://aistudio.google.com/))
 
 ---
 
@@ -26,20 +18,19 @@ This is the starter code used in Boot.dev's [Learn Retrieval Augmented Generatio
 
 1. Clone the repository.
 
-2. Create and activate a virtual environment:
+2. Sync the environment.
 ```bash
-uv venv .venv
-source .venv/bin/activate
+uv sync
 ```
 
-3. Install dependencies:
-```bash
-uv pip install -e .
+3. Create a file at `data/movies.json` and populate it with the JSON movie data from [movie dataset file](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/course-rag-movies.json)
+
+4. Create a file at `data/stopwords.txt` and populate it with stop words from [this list of stop words](https://countwordsfree.com/stopwords)
+
+5. Create a .env file and put Gemini API key here:
 ```
-
-4. Create a file at `data/movies.json` and populate it with the JSON movie data from [movie dataset file](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/course-rag-movies.json)
-
-5. Create a file at `data/stopwords.txt` and populate it with stop words from [this list of stop words](https://countwordsfree.com/stopwords)
+GEMINI_API_KEY=your_api_key_here
+```
 
 ---
 
