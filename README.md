@@ -802,9 +802,6 @@ Answer:
 Okay, so Jurassic Park on Hoopla is about John Hammond, an industrialist, and his bioengineering company, InGen. They created a theme park. Some of the main characters are probably also Alan Grant, Ellie Sattler, and Ian Malcolm.
 ```
 
-++++++++
-
-
 ---
 
 ### Describe image
@@ -828,6 +825,29 @@ Output:
 ```
 Rewritten query: "Paddington" movie Michael Bond marmalade London blue duffle coat red hat
 Total tokens:    343
+```
+
+---
+
+## Multimodal search
+
+### Verify image embedding command
+
+```bash
+uv run cli/multimodal_search_cli.py verify_image_embedding <image_path>
+```
+
+- `<image_path>`: path to the image file you want to embed.
+
+##### Example
+```bash
+uv run cli/multimodal_search_cli.py verify_image_embedding 'data/paddington.jpeg'
+```
+
+Output:
+```
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Embedding shape: 512 dimensions
 ```
 
 ---
