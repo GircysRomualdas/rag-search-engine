@@ -680,6 +680,7 @@ k=3
 |-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
 | `rag "<query>"`                                                   | Run Retrieval-Augmented Generation: search movies, then have an LLM answer based on the results |
 | `summarize "<query>" [--limit N]`                                 | Summarize multiple movie search results into a concise, info-dense overview                     |
+| `citations "<query>" [--limit N]`                                        | Answer a query using search results and include inline citations.          |
 
 ---
 
@@ -740,4 +741,33 @@ Search Results:
 
 LLM Summary:
 Hoopla offers a variety of dinosaur-themed action movies. For a classic, check out *Jurassic Park*, where bioengineers create a dinosaur theme park that quickly spirals out of control. *A Sound of Thunder* presents a time-traveling company that allows people to hunt dinosaurs in the past, while *The Good Dinosaur* offers an alternate timeline where the asteroid missed Earth, and dinosaurs and humans coexist. If you're looking for something different, *The Crater Lake Monster* features a monstrous creature terrorizing Northern California.
+```
+
+---
+
+#### Citations command
+
+```bash
+uv run cli/augmented_generation_cli.py citations "<query>" [--limit N]
+```
+
+- `<query>`: the natural-language search query you want to run.
+- `--limit N` (optional): maximum number of search results to summarize (defaults to 5).
+
+##### Example
+```bash
+uv run cli/augmented_generation_cli.py citations 'action movie with lasers'
+```
+
+Output:
+```
+Search Results:
+     -Dark Star
+     -Destricted
+     -Eliminators
+     -Terra
+     -The Octagon
+
+LLM Answer:
+Based on the Hoopla movie descriptions, "Eliminators" features a time-traveling mad scientist who creates a cyborg with a laser on its arm [1]. This sounds like it could fit your request for an action movie with lasers.
 ```
