@@ -10,6 +10,7 @@ from lib.utils.constants import (
     DEFAULT_MODEL,
 )
 from lib.utils.data_models import Movie, MovieId, SemanticResult
+from lib.utils.utils import get_cosine_similarity
 from sentence_transformers import SentenceTransformer
 
 
@@ -84,18 +85,6 @@ class SemanticSearch:
             )
 
         return results
-
-
-def get_cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
-    dot_product = np.dot(vec1, vec2)
-    norm1 = np.linalg.norm(vec1)
-    norm2 = np.linalg.norm(vec2)
-
-    if norm1 == 0 or norm2 == 0:
-        return 0.0
-
-    return dot_product / (norm1 * norm2)
-
 
 def get_text_chunks(
     text: str,

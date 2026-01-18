@@ -831,6 +831,15 @@ Total tokens:    343
 
 ## Multimodal search
 
+### Commands
+
+| Command                                                              | Purpose                                                     |
+|----------------------------------------------------------------------|-------------------------------------------------------------|
+| `verify_image_embedding <image_path>`                                | Generate an embedding for an image and print its shape     |
+| `image_search <image_path>`                                          | Search using an image and print matching results           |
+
+---
+
 ### Verify image embedding command
 
 ```bash
@@ -839,7 +848,7 @@ uv run cli/multimodal_search_cli.py verify_image_embedding <image_path>
 
 - `<image_path>`: path to the image file you want to embed.
 
-##### Example
+#### Example
 ```bash
 uv run cli/multimodal_search_cli.py verify_image_embedding 'data/paddington.jpeg'
 ```
@@ -851,3 +860,37 @@ Embedding shape: 512 dimensions
 ```
 
 ---
+
+### Image search command
+
+```bash
+uv run cli/multimodal_search_cli.py image_search <image_path>
+```
+
+- `<image_path>`: path to the image file you want to search with.
+
+#### Example
+```bash
+uv run cli/multimodal_search_cli.py image_search 'data/paddington.jpeg'
+```
+
+Output:
+```
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Batches: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████| 157/157 [00:03<00:00, 42.08it/s]
+Batches: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 17.82it/s]
+1. Paddington (similarity: 0.309)
+   Deep in the rainforests of Peru, a young bear lives peacefully with his Aunt Lucy and Uncle Pastuzo,...
+
+2. Ted (similarity: 0.294)
+   In 1985, eight-year-old John Bennett makes a Christmas wish that his teddy bear, Ted, would come to ...
+
+3. Sing (similarity: 0.275)
+   Set in an animated world controlled by animals, the film starts with a young koala bear named Buster...
+
+4. Bastille Day (similarity: 0.269)
+   On the eve of Bastille Day in Paris, an American conman Michael Mason, steals a woman's handbag with...
+
+5. Guardians of the Galaxy (similarity: 0.269)
+   On planet Earth in 1988, young Peter Quill (Wyatt Oleff) sits in the waiting room of a hospital, lis...
+```
