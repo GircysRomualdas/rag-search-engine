@@ -679,6 +679,7 @@ k=3
 | Command                                                           | Purpose                                                                                          |
 |-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
 | `rag "<query>"`                                                   | Run Retrieval-Augmented Generation: search movies, then have an LLM answer based on the results |
+| `summarize "<query>" [--limit N]`                                 | Summarize multiple movie search results into a concise, info-dense overview                     |
 
 ---
 
@@ -710,4 +711,33 @@ Okay, based on what's available on Hoopla right now, here are the action and din
 *   **Jurassic Park:** This classic movie is about a theme park populated with dinosaurs brought to life through bioengineering.
 *   **A Sound of Thunder:** This movie is about a company that allows people to hunt dinosaurs in the past.
 *   **The Good Dinosaur:** This movie is about a dinosaur who lives 65 million years ago.
+```
+
+---
+
+#### Summarize command
+
+```bash
+uv run cli/augmented_generation_cli.py summarize "<query>" [--limit N]
+```
+
+- `<query>`: the natural-language search query you want to run.
+- `--limit N` (optional): maximum number of search results to summarize (defaults to 5).
+
+##### Example
+```bash
+uv run cli/augmented_generation_cli.py summarize 'movies about action and dinosaurs'
+```
+
+Output:
+```
+Search Results:
+     -A Sound of Thunder
+     -A Claymation Christmas Celebration
+     -The Good Dinosaur
+     -The Crater Lake Monster
+     -Jurassic Park
+
+LLM Summary:
+Hoopla offers a variety of dinosaur-themed action movies. For a classic, check out *Jurassic Park*, where bioengineers create a dinosaur theme park that quickly spirals out of control. *A Sound of Thunder* presents a time-traveling company that allows people to hunt dinosaurs in the past, while *The Good Dinosaur* offers an alternate timeline where the asteroid missed Earth, and dinosaurs and humans coexist. If you're looking for something different, *The Crater Lake Monster* features a monstrous creature terrorizing Northern California.
 ```
